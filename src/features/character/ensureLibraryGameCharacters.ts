@@ -144,6 +144,7 @@ export async function syncLibraryGameCharacters(
             .filter(Boolean);
         }
       } catch {
+        // keep empty relations when stored JSON is invalid
       }
       if (relation && !relations.includes(relation)) {
         relations.push(relation);

@@ -51,6 +51,7 @@ export function useCachedEntityImage({
           setLocalSrc(toLocalImageSrc(path));
         }
       } catch {
+        // keep remoteUrl fallback when local cache resolve fails
       }
     })();
 

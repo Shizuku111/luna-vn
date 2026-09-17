@@ -48,6 +48,7 @@ export function parsePersonRelations(raw?: string | null): string[] {
       return [parsed.trim()];
     }
   } catch {
+    // fall through to delimiter / raw string parsing
   }
   if (/[、，,]/.test(trimmed)) {
     return trimmed

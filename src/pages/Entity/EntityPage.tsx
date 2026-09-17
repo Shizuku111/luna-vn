@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { DetailAtmosphere } from "@/components/DetailAtmosphere";
 import type { DetailOpenOrigin } from "@/components/DetailOverlay";
@@ -175,7 +175,7 @@ export function EntityPage({
     }
   }
 
-  useEffect(() => {
+  const resetPageForEntity = useEffectEvent(() => {
     setEntity(null);
     setNotFound(false);
     setGames([]);
@@ -183,6 +183,10 @@ export function EntityPage({
     setParticipations([]);
     setAtmosphereRgb(null);
     void refresh();
+  });
+
+  useEffect(() => {
+    resetPageForEntity();
   }, [kind, entityId]);
 
   useEffect(() => {

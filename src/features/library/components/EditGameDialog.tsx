@@ -69,14 +69,7 @@ export function EditGameDialog({
     setPendingSubject(null);
     setResolvedBangumiId(null);
     setSaving(false);
-  }, [
-    open,
-    game?.id,
-    game?.bangumiId,
-    game?.name,
-    game?.nameCn,
-    game?.launchPath,
-  ]);
+  }, [open, game]);
 
   const coverPreviewUrl = useMemo(() => {
     if (coverSourcePath) return convertFileSrc(coverSourcePath);

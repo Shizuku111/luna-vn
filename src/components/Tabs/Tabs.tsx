@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useEffectEvent,
   useLayoutEffect,
   useRef,
   useState,
@@ -83,7 +84,7 @@ export function Tabs({
     return { left: active.offsetLeft, width: tabWidth, ready: true };
   }
 
-  function updateIndicator() {
+  const updateIndicator = useEffectEvent(() => {
     const next = measureIndicator();
     if (!next) {
       setIndicator((prev) => ({ ...prev, ready: false, width: 0 }));
@@ -99,7 +100,7 @@ export function Tabs({
       }
       return next;
     });
-  }
+  });
 
   useLayoutEffect(() => {
     updateIndicator();
@@ -143,6 +144,7 @@ export function Tabs({
           await document.fonts.ready;
         }
       } catch {
+        // fonts.ready may reject in some environments
       }
       if (cancelled) return;
       updateIndicator();
@@ -154,7 +156,7 @@ export function Tabs({
       observer?.disconnect();
       window.removeEventListener("resize", updateIndicator);
     };
-  }, [activeKey, itemsSignature, shortIndicator]);
+  }, [activeKey, itemsSignature]);
 
   return (
     <div

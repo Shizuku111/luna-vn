@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { DetailAtmosphere } from "@/components/DetailAtmosphere";
 import { DialogConfirm } from "@/components/Dialog";
@@ -211,13 +211,17 @@ export function GamePage({
     }
   }
 
-  useEffect(() => {
+  const resetPageForGameId = useEffectEvent(() => {
     setGame(null);
     setNotFound(false);
     setActiveTab("characters");
     setAtmosphereRgb(null);
     resetCoverState();
     void refresh();
+  });
+
+  useEffect(() => {
+    resetPageForGameId();
   }, [gameId]);
 
   const coverUrlForAtmosphere = game

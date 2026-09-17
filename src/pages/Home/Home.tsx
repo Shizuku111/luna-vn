@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useEffectEvent, useMemo, useState, type ReactNode } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { Button } from "@/components/Button";
@@ -182,8 +182,12 @@ export function HomePage({
     }
   }
 
+  const onRefreshLogs = useEffectEvent((showLoading: boolean) => {
+    void refreshLogs(showLoading);
+  });
+
   useEffect(() => {
-    void refreshLogs(true);
+    onRefreshLogs(true);
   }, []);
 
   useEffect(() => {
@@ -191,7 +195,7 @@ export function HomePage({
     let unlisten: (() => void) | undefined;
 
     void listen(GAME_LOGS_CHANGED_EVENT, () => {
-      void refreshLogs(false);
+      onRefreshLogs(false);
     }).then((fn) => {
       if (disposed) {
         fn();
