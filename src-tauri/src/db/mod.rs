@@ -213,7 +213,7 @@ pub fn init_db(app: &AppHandle) -> Result<LibraryDb, String> {
     let dir = app.path().app_data_dir().map_err(|err| err.to_string())?;
     std::fs::create_dir_all(&dir).map_err(|err| err.to_string())?;
 
-    let path = dir.join("library.db");
+    let path = dir.join("lunavn.db");
     let conn = Connection::open(path).map_err(|err| err.to_string())?;
     conn.execute_batch(
         r#"
