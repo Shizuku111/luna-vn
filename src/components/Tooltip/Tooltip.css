@@ -1,0 +1,84 @@
+.ui-tooltip-trigger {
+  display: inline-flex;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.ui-tooltip-trigger--fill {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  line-height: 0;
+}
+
+.game-page-cover > .ui-tooltip-trigger--fill {
+  height: 100%;
+}
+
+.ui-tooltip {
+  position: fixed;
+  z-index: 2400;
+  max-width: min(320px, calc(100vw - 16px));
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(245, 247, 250, 0.96);
+  color: #1f2430;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(127, 127, 127, 0.16);
+  opacity: 0;
+  transform: translateY(2px);
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+}
+
+.ui-tooltip.is-ready {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ui-tooltip--bottom.is-ready {
+  transform: translateY(0);
+}
+
+.ui-tooltip--bottom {
+  transform: translateY(-2px);
+}
+
+.ui-tooltip--left {
+  transform: translateX(2px);
+}
+
+.ui-tooltip--left.is-ready {
+  transform: translateX(0);
+}
+
+.ui-tooltip--right {
+  transform: translateX(-2px);
+}
+
+.ui-tooltip--right.is-ready {
+  transform: translateX(0);
+}
+
+.ui-tooltip--cursor {
+  transform: translateY(2px);
+}
+
+.ui-tooltip--cursor.is-ready {
+  transform: translateY(0);
+}
+
+html[data-theme="dark"] .ui-tooltip {
+  background: rgba(28, 32, 40, 0.96);
+  color: #f5f7fa;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}

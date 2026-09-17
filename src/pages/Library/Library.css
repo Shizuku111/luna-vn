@@ -1,0 +1,114 @@
+.library-toolbar {
+  gap: 20px;
+  justify-content: space-between;
+  margin-top: calc(-1 * (var(--titlebar-height) + 4px));
+}
+
+.library-toolbar-title {
+  margin: 0;
+  min-width: 0;
+  padding: 0 8px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 400;
+  line-height: 1;
+  color: #6b7280;
+}
+
+.library-toolbar-title-name {
+  flex-shrink: 0;
+}
+
+.library-toolbar-title-sep,
+.library-toolbar-title-count {
+  color: inherit;
+  font-weight: 400;
+}
+
+.library-toolbar-title-count {
+  font-variant-numeric: tabular-nums;
+}
+
+.library-toolbar .list-toolbar-right {
+  gap: 8px;
+}
+
+.library-toolbar-trigger {
+  margin: 0;
+  padding: 0 8px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.library-toolbar-trigger:hover,
+.library-view-panel.is-open .library-toolbar-trigger,
+.library-toolbar-add.is-open .library-toolbar-trigger,
+.library-toolbar-trigger:focus-visible {
+  outline: none;
+  background: rgba(127, 127, 127, 0.08);
+  color: #1f2430;
+}
+
+.library-toolbar-trigger.is-active {
+  color: var(--sakura);
+}
+
+.library-toolbar-trigger.is-active:hover,
+.library-view-panel.is-open .library-toolbar-trigger.is-active {
+  color: var(--sakura-hover);
+}
+
+.library-toolbar-trigger-label {
+  flex-shrink: 0;
+}
+
+.library-toolbar-trigger-icon {
+  flex-shrink: 0;
+  font-size: 15px;
+  opacity: 0.7;
+}
+
+html[data-theme="dark"] {
+  .library-toolbar-title {
+    color: #9aa0ab;
+  }
+
+  .library-toolbar-trigger {
+    color: #9aa0ab;
+  }
+
+  .library-toolbar-trigger:hover,
+  .library-view-panel.is-open .library-toolbar-trigger,
+  .library-toolbar-add.is-open .library-toolbar-trigger,
+  .library-toolbar-trigger:focus-visible {
+    background: rgba(255, 255, 255, 0.08);
+    color: #f2efe8;
+  }
+
+  .library-toolbar-trigger.is-active {
+    color: var(--sakura);
+  }
+
+  .library-toolbar-trigger.is-active:hover,
+  .library-view-panel.is-open .library-toolbar-trigger.is-active {
+    color: var(--sakura);
+  }
+}

@@ -1,0 +1,78 @@
+.ui-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: inherit;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ui-radio.is-muted {
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.ui-radio.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ui-radio-input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 1.5px solid rgba(127, 127, 127, 0.42);
+  border-radius: 50%;
+  background: transparent;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.ui-radio.is-disabled .ui-radio-input {
+  cursor: not-allowed;
+}
+
+.ui-radio-input:checked {
+  border-color: var(--sakura);
+  background-color: var(--sakura);
+  background-image: radial-gradient(
+    circle at center,
+    #fff 0 3px,
+    transparent 3.5px
+  );
+  box-shadow: none;
+}
+
+.ui-radio-input:focus-visible {
+  outline: none;
+  box-shadow: var(--sakura-ring);
+}
+
+.ui-radio-label {
+  line-height: 1.3;
+}
+
+html[data-theme="dark"] {
+  .ui-radio.is-muted {
+    color: #9aa0ab;
+  }
+
+  .ui-radio-input {
+    border-color: rgba(255, 255, 255, 0.32);
+  }
+
+  .ui-radio-input:checked {
+    border-color: var(--sakura);
+  }
+}

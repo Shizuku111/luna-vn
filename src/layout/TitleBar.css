@@ -1,0 +1,221 @@
+﻿.titlebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+  height: var(--titlebar-height);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px var(--content-inset-right) 16px var(--content-inset-x);
+  background: transparent;
+  user-select: none;
+  pointer-events: none;
+}
+
+.titlebar-leading {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  flex-shrink: 0;
+  min-width: 0;
+  pointer-events: auto;
+}
+
+.titlebar-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.titlebar-brand-mark {
+  font-family: "Cinzel Decorative", "Cinzel", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.05;
+  color: var(--sakura);
+}
+
+.titlebar-brand-sub {
+  font-family: "Cinzel", serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  line-height: 1.1;
+  color: #2a2d34;
+  padding-left: 0.08em;
+}
+
+.titlebar-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.titlebar-nav-item {
+  position: relative;
+  margin: 0;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: none;
+  background: transparent;
+  color: #8b919c;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.12rem;
+  font-weight: 500;
+  line-height: 1.8;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.titlebar-nav-item::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 1.1em;
+  height: 2.5px;
+  border-radius: 999px;
+  background: var(--sakura);
+  transform: translateX(-50%) scaleX(0);
+  opacity: 0;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.titlebar-nav-item:hover {
+  background: transparent;
+  color: #5c6370;
+}
+
+.titlebar-nav-item.is-active {
+  background: transparent;
+  color: var(--sakura);
+}
+
+.titlebar-nav-item.is-active::after {
+  transform: translateX(-50%) scaleX(1);
+  opacity: 1;
+}
+
+.titlebar-drag {
+  flex: 1;
+  min-width: 12px;
+  align-self: stretch;
+  pointer-events: auto;
+}
+
+.titlebar-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.titlebar-btn {
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.titlebar-btn-settings {
+  margin-right: 20px;
+}
+
+.titlebar-btn-settings-icon {
+  font-size: 18px;
+}
+
+.titlebar-btn:hover {
+  opacity: 1;
+  background-color: rgba(127, 127, 127, 0.18);
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.12);
+}
+
+.titlebar-btn:active {
+  background-color: rgba(127, 127, 127, 0.28);
+}
+
+.titlebar-btn-settings.is-active {
+  opacity: 1;
+  color: var(--sakura);
+  background: rgba(242, 166, 188, 0.18);
+}
+
+.titlebar-btn-close:hover {
+  background-color: #e81123;
+  color: #fff;
+  box-shadow: none;
+}
+
+.titlebar-btn-close:active {
+  background-color: #c50f1f;
+  color: #fff;
+}
+
+html[data-theme="dark"] {
+  .titlebar-brand-sub {
+    color: #e8e6e1;
+  }
+
+  .titlebar-nav-item {
+    color: #8a909c;
+  }
+
+  .titlebar-nav-item:hover {
+    background: transparent;
+    color: #b4bac4;
+  }
+
+  .titlebar-nav-item.is-active {
+    background: transparent;
+    color: var(--sakura);
+  }
+
+  .titlebar-btn:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .titlebar-btn:active {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .titlebar-btn-settings.is-active {
+    background: rgba(242, 166, 188, 0.18);
+  }
+
+  .titlebar-btn-close:hover {
+    background-color: #e81123;
+    box-shadow: none;
+  }
+}

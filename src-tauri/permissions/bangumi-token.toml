@@ -1,0 +1,8 @@
+[[permission]]
+identifier = "allow-bangumi-token"
+description = "Allow reading and writing Bangumi access token in the OS keyring."
+commands.allow = [
+  "get_bangumi_token",
+  "set_bangumi_token",
+  "delete_bangumi_token"
+]

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="4 1 16 22" fill="none">
+  <path
+    d="M5 2h14M5 22h14"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    d="M7 2v4.2c0 1.1.5 2.2 1.4 2.9L12 12l3.6-2.9c.9-.7 1.4-1.8 1.4-2.9V2M7 22v-4.2c0-1.1.5-2.2 1.4-2.9L12 12l3.6 2.9c.9.7 1.4 1.8 1.4 2.9V22"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linejoin="round"
+    stroke-linecap="square"
+  />
+  <path
+    d="M9.5 19h5"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+</svg>

@@ -1,0 +1,210 @@
+:root {
+  --tone-import-fg: #2f7d5b;
+  --tone-import-bg: rgba(61, 139, 110, 0.14);
+
+  --tone-open-fg: var(--sakura);
+  --tone-open-bg: color-mix(in srgb, var(--sakura) 18%, transparent);
+
+  --tone-favorite-fg: var(--favorite);
+  --tone-favorite-bg: color-mix(in srgb, var(--favorite) 18%, transparent);
+
+  --tone-wishlist-fg: var(--want-to-play);
+  --tone-wishlist-bg: color-mix(in srgb, var(--want-to-play) 18%, transparent);
+
+  --tone-neutral-fg: #6b7280;
+  --tone-neutral-bg: rgba(127, 127, 127, 0.12);
+
+  --tone-status-not-started-fg: #8a919c;
+  --tone-status-not-started-bg: rgba(138, 145, 156, 0.16);
+
+  --tone-status-playing-fg: var(--sakura);
+  --tone-status-playing-bg: color-mix(in srgb, var(--sakura) 18%, transparent);
+
+  --tone-status-finished-fg: var(--success);
+  --tone-status-finished-bg: color-mix(in srgb, var(--success) 18%, transparent);
+
+  --tone-status-on-hold-fg: var(--warning);
+  --tone-status-on-hold-bg: color-mix(in srgb, var(--warning) 18%, transparent);
+
+  --tone-status-dropped-fg: var(--danger);
+  --tone-status-dropped-bg: color-mix(in srgb, var(--danger) 18%, transparent);
+}
+
+html[data-theme="dark"] {
+  --tone-import-fg: #6cbc9a;
+  --tone-import-bg: rgba(108, 188, 154, 0.16);
+
+  --tone-open-fg: var(--sakura);
+  --tone-open-bg: color-mix(in srgb, var(--sakura) 20%, transparent);
+
+  --tone-favorite-fg: var(--favorite);
+  --tone-favorite-bg: color-mix(in srgb, var(--favorite) 20%, transparent);
+
+  --tone-wishlist-fg: var(--want-to-play);
+  --tone-wishlist-bg: color-mix(in srgb, var(--want-to-play) 20%, transparent);
+
+  --tone-neutral-fg: #9aa0ab;
+  --tone-neutral-bg: rgba(255, 255, 255, 0.08);
+
+  --tone-status-not-started-fg: #9ca3af;
+  --tone-status-not-started-bg: rgba(156, 163, 175, 0.18);
+
+  --tone-status-playing-fg: var(--sakura);
+  --tone-status-playing-bg: color-mix(in srgb, var(--sakura) 20%, transparent);
+
+  --tone-status-finished-fg: var(--success);
+  --tone-status-finished-bg: color-mix(in srgb, var(--success) 20%, transparent);
+
+  --tone-status-on-hold-fg: var(--warning);
+  --tone-status-on-hold-bg: color-mix(in srgb, var(--warning) 20%, transparent);
+
+  --tone-status-dropped-fg: var(--danger);
+  --tone-status-dropped-bg: color-mix(in srgb, var(--danger) 20%, transparent);
+}
+
+.home-activity-action-icon.is-import,
+.home-activity-main.is-import::before {
+  background: var(--tone-import-bg);
+}
+.home-activity-action-icon.is-import,
+.home-activity-action.is-import {
+  color: var(--tone-import-fg);
+}
+
+.home-activity-action-icon.is-open,
+.home-activity-main.is-open::before {
+  background: var(--tone-open-bg);
+}
+.home-activity-action-icon.is-open,
+.home-activity-action.is-open {
+  color: var(--tone-open-fg);
+}
+
+.home-activity-action-icon.is-favorite,
+.home-activity-main.is-favorite::before {
+  background: var(--tone-favorite-bg);
+}
+.home-activity-action-icon.is-favorite,
+.home-activity-action.is-favorite {
+  color: var(--tone-favorite-fg);
+}
+
+.home-activity-action-icon.is-wishlist,
+.home-activity-main.is-wishlist::before {
+  background: var(--tone-wishlist-bg);
+}
+.home-activity-action-icon.is-wishlist,
+.home-activity-action.is-wishlist {
+  color: var(--tone-wishlist-fg);
+}
+
+.home-activity-action-icon.is-unfavorite,
+.home-activity-action-icon.is-unwishlist,
+.home-activity-action-icon.is-other,
+.home-activity-main.is-unfavorite::before,
+.home-activity-main.is-unwishlist::before,
+.home-activity-main.is-other::before,
+.home-activity-main::before {
+  background: var(--tone-neutral-bg);
+}
+.home-activity-action-icon.is-unfavorite,
+.home-activity-action-icon.is-unwishlist,
+.home-activity-action-icon.is-other,
+.home-activity-action.is-unfavorite,
+.home-activity-action.is-unwishlist {
+  color: var(--tone-neutral-fg);
+}
+
+.home-activity-action-icon.is-status_not_started,
+.home-activity-main.is-status_not_started::before {
+  background: var(--tone-status-not-started-bg);
+}
+.home-activity-action-icon.is-status_not_started,
+.home-activity-action.is-status_not_started {
+  color: var(--tone-status-not-started-fg);
+}
+
+.home-activity-action-icon.is-status_playing,
+.home-activity-main.is-status_playing::before {
+  background: var(--tone-status-playing-bg);
+}
+.home-activity-action-icon.is-status_playing,
+.home-activity-action.is-status_playing {
+  color: var(--tone-status-playing-fg);
+}
+
+.home-activity-action-icon.is-status_finished,
+.home-activity-main.is-status_finished::before {
+  background: var(--tone-status-finished-bg);
+}
+.home-activity-action-icon.is-status_finished,
+.home-activity-action.is-status_finished {
+  color: var(--tone-status-finished-fg);
+}
+
+.home-activity-action-icon.is-status_on_hold,
+.home-activity-main.is-status_on_hold::before {
+  background: var(--tone-status-on-hold-bg);
+}
+.home-activity-action-icon.is-status_on_hold,
+.home-activity-action.is-status_on_hold {
+  color: var(--tone-status-on-hold-fg);
+}
+
+.home-activity-action-icon.is-status_dropped,
+.home-activity-main.is-status_dropped::before {
+  background: var(--tone-status-dropped-bg);
+}
+.home-activity-action-icon.is-status_dropped,
+.home-activity-action.is-status_dropped {
+  color: var(--tone-status-dropped-fg);
+}
+
+.library-game-card::before {
+  background: var(--tone-neutral-bg);
+}
+
+.library-game-card.library-status-playing::before {
+  background: var(--tone-status-playing-bg);
+}
+
+.library-game-card.library-status-not-started::before {
+  background: var(--tone-status-not-started-bg);
+}
+
+.library-game-card.library-status-finished::before {
+  background: var(--tone-status-finished-bg);
+}
+
+.library-game-card.library-status-on-hold::before {
+  background: var(--tone-status-on-hold-bg);
+}
+
+.library-game-card.library-status-dropped::before {
+  background: var(--tone-status-dropped-bg);
+}
+
+.library-game-status-icon.library-status-playing,
+.ui-context-menu-item.library-status-playing {
+  color: var(--tone-status-playing-fg);
+}
+
+.library-game-status-icon.library-status-not-started,
+.ui-context-menu-item.library-status-not-started {
+  color: var(--tone-status-not-started-fg);
+}
+
+.library-game-status-icon.library-status-finished,
+.ui-context-menu-item.library-status-finished {
+  color: var(--tone-status-finished-fg);
+}
+
+.library-game-status-icon.library-status-on-hold,
+.ui-context-menu-item.library-status-on-hold {
+  color: var(--tone-status-on-hold-fg);
+}
+
+.library-game-status-icon.library-status-dropped,
+.ui-context-menu-item.library-status-dropped {
+  color: var(--tone-status-dropped-fg);
+}

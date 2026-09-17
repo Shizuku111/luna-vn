@@ -1,0 +1,102 @@
+﻿.detail-infobox {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-infobox-row {
+  display: grid;
+  grid-template-columns: 5.5em 1fr;
+  gap: 8px 12px;
+  align-items: start;
+}
+
+.detail-infobox-row dt {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.detail-infobox-row dd {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  word-break: break-all;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.detail-infobox-value {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.detail-infobox-value:not(.is-tag) {
+  flex: 1 1 100%;
+}
+
+.detail-infobox-value.is-tag {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;
+  max-width: 100%;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(127, 127, 127, 0.12);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.detail-infobox-value.is-link {
+  color: #5b9bd5;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.detail-infobox-value.is-link:hover {
+  color: #3d84c6;
+}
+
+.detail-infobox-value.is-tag.is-link:hover {
+  background: rgba(91, 155, 213, 0.16);
+  text-decoration: none;
+}
+
+.detail-infobox-value.is-link:not(.is-tag):hover {
+  text-decoration: underline;
+}
+
+html[data-theme="dark"] {
+  .detail-infobox-row dt {
+    color: #6b7280;
+  }
+
+  .detail-infobox-value.is-tag {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .detail-infobox-value.is-link {
+    color: #7eb6e8;
+  }
+
+  .detail-infobox-value.is-link:hover {
+    color: #9ec9f0;
+  }
+
+  .detail-infobox-value.is-tag.is-link:hover {
+    background: rgba(126, 182, 232, 0.18);
+  }
+}

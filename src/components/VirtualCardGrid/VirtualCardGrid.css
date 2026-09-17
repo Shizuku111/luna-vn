@@ -1,0 +1,22 @@
+.virtual-card-grid {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+}
+
+.virtual-card-grid-row {
+  display: grid;
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: visible;
+}
+
+.virtual-card-grid-row:hover {
+  z-index: 1;
+}
+
+.virtual-card-grid-row:is(:last-child) {
+  padding-bottom: 0 !important;
+}

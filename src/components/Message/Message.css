@@ -1,0 +1,129 @@
+﻿.ui-message-host {
+  position: fixed;
+  left: 50%;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--message-gap, 10px);
+  width: max-content;
+  max-width: min(480px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.ui-message {
+  --message-shadow: 0 6px 18px rgba(127, 127, 127, 0.18);
+
+  pointer-events: auto;
+  min-width: 160px;
+  max-width: 100%;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  box-shadow: var(--message-shadow);
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  animation: ui-message-in 0.2s ease;
+}
+
+.ui-message.is-leaving {
+  pointer-events: none;
+  animation: ui-message-out 0.22s ease forwards;
+}
+
+.ui-message--info {
+  background: #ffffff;
+  color: #1f2430;
+}
+
+.ui-message--success {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.ui-message--error {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+.ui-message--warning {
+  background: var(--warning);
+  color: #ffffff;
+}
+
+.ui-message--loading {
+  background: #ffffff;
+  color: #1f2430;
+}
+
+.ui-message-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.ui-message-icon.is-spinning {
+  animation: ui-message-spin 0.8s linear infinite;
+}
+
+.ui-message-icon .ui-icon {
+  font-size: 1em;
+}
+
+.ui-message-content {
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+  word-break: break-word;
+}
+
+@keyframes ui-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ui-message-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes ui-message-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+html[data-theme="dark"] {
+  .ui-message {
+    --message-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+  }
+
+  .ui-message--info,
+  .ui-message--loading {
+    background: #ffffff;
+    color: #1f2430;
+  }
+}

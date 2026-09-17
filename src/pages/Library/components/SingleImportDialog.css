@@ -1,0 +1,93 @@
+﻿.library-add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.library-add-tabs {
+  width: 100%;
+}
+
+.library-add-form .ui-btn {
+  width: 100%;
+}
+
+.library-add-form .edit-game-cover-actions .ui-btn,
+.library-add-form .edit-game-launch .ui-btn {
+  width: auto;
+}
+
+.library-add-launch {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.library-add-launch-path {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 0 4px;
+}
+
+.library-add-launch-path-text {
+  flex: 1;
+  min-width: 0;
+  color: #6b7280;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.library-add-launch-path-clear {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease,
+    color 0.15s ease;
+}
+
+.library-add-launch-path-clear:hover {
+  opacity: 1;
+  color: inherit;
+  background: rgba(127, 127, 127, 0.12);
+}
+
+.library-add-launch-path-clear:active {
+  background: rgba(127, 127, 127, 0.18);
+}
+
+html[data-theme="dark"] {
+  .library-add-launch-path-text {
+    color: #9aa0ab;
+  }
+
+  .library-add-launch-path-clear {
+    color: #9aa0ab;
+  }
+
+  .library-add-launch-path-clear:hover {
+    color: #f2efe8;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .library-add-launch-path-clear:active {
+    background: rgba(255, 255, 255, 0.16);
+  }
+}

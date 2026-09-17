@@ -1,0 +1,18 @@
+.ui-icon {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  font-size: 14px;
+  overflow: visible;
+}
+
+.ui-icon.is-spinning {
+  animation: ui-icon-spin 0.7s linear infinite;
+}
+
+@keyframes ui-icon-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

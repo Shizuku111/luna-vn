@@ -1,0 +1,57 @@
+.game-detail-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.game-detail-group + .game-detail-group {
+  margin-top: 12px;
+}
+
+.game-detail-group-label {
+  margin: 0;
+  padding: 2px 2px 8px;
+  color: #9ca3af;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.game-detail-tile-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.game-detail-tile-list > li > .ui-tile {
+  display: flex;
+  width: 100%;
+  transition:
+    background-color 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.game-detail-tile-list > li > .ui-tile.is-clickable:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(40, 30, 35, 0.06);
+}
+
+html[data-theme="dark"] {
+  .game-detail-group-label {
+    color: #7d8490;
+  }
+
+  .game-detail-tile-list > li > .ui-tile.is-clickable:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+  }
+}
+
+@media (max-width: 720px) {
+  .game-detail-tile-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -1,0 +1,146 @@
+﻿.entity-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px;
+  margin: -10px;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.entity-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 12px;
+  background: var(--tone-neutral-bg);
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .entity-card::before {
+    transition:
+      opacity 0.2s ease,
+      transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .entity-card:hover {
+    z-index: 2;
+  }
+
+  .entity-card:hover::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.entity-card-avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: rgba(127, 127, 127, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.1);
+}
+
+.entity-card-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  border-radius: 50%;
+}
+
+.entity-card-avatar-empty {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.entity-card-favorite-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  z-index: 1;
+  display: inline-flex;
+  color: var(--favorite);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+}
+
+.entity-card-favorite-badge .ui-icon {
+  font-size: 18px;
+}
+
+.entity-favorite-active {
+  color: var(--favorite);
+}
+
+.entity-card-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.entity-card-name,
+.entity-card-name-cn {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.35;
+}
+
+.entity-card-name {
+  font-size: 0.95rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.entity-card-name-cn {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.entity-card-details {
+  margin: 0;
+  min-width: 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #9ca3af;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entity-card-details-sep {
+  margin: 0 6px;
+}
+
+html[data-theme="dark"] {
+  .entity-card-name-cn {
+    color: #9aa0ab;
+  }
+
+  .entity-card-details {
+    color: #7d8490;
+  }
+
+  .entity-card-avatar {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}

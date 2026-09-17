@@ -1,0 +1,122 @@
+.app-content-overlay.detail-overlay {
+  --detail-origin-x: 50%;
+  --detail-origin-y: 50%;
+  --detail-start-scale: 0.92;
+  --detail-atmosphere-y: 0px;
+  --detail-page-max-width: calc(
+    var(--app-window-default-width) - var(--content-inset-x) -
+      var(--content-inset-right)
+  );
+
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform-origin: var(--detail-origin-x) var(--detail-origin-y);
+  will-change: transform, opacity;
+}
+
+.detail-overlay-chrome {
+  position: absolute;
+  top: var(--titlebar-height);
+  left: var(--content-inset-x);
+  right: var(--content-inset-right);
+  z-index: 6;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.detail-overlay-chrome-slot {
+  position: relative;
+  width: 100%;
+  max-width: var(--detail-page-max-width);
+  height: 0;
+  pointer-events: none;
+}
+
+.detail-overlay-atmosphere-slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  height: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.detail-overlay-scroll {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  padding: var(--titlebar-height) var(--content-inset-right) var(--content-inset)
+    var(--content-inset-x);
+  scrollbar-gutter: stable;
+  background: transparent;
+}
+
+.app-content-overlay.detail-overlay.is-scroll-ready .detail-overlay-scroll {
+  overflow: auto;
+}
+
+.app-content-overlay.detail-overlay.is-enter {
+  opacity: 0;
+  transform: scale(var(--detail-start-scale));
+}
+
+.app-content-overlay.detail-overlay.is-open {
+  animation: detail-overlay-expand 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.app-content-overlay.detail-overlay.is-exit {
+  animation: detail-overlay-collapse 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
+  pointer-events: none;
+}
+
+.app-content-overlay.detail-overlay.is-exit .detail-overlay-scroll {
+  overflow: hidden;
+}
+
+@keyframes detail-overlay-expand {
+  from {
+    opacity: 0.88;
+    transform: scale(var(--detail-start-scale));
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes detail-overlay-collapse {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(var(--detail-start-scale));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-content-overlay.detail-overlay.is-enter,
+  .app-content-overlay.detail-overlay.is-open,
+  .app-content-overlay.detail-overlay.is-exit {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .app-content-overlay.detail-overlay.is-open .detail-overlay-scroll,
+  .app-content-overlay.detail-overlay.is-scroll-ready .detail-overlay-scroll {
+    overflow: auto;
+  }
+}

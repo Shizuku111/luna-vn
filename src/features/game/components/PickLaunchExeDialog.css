@@ -1,0 +1,83 @@
+.ui-dialog.pick-launch-exe-dialog {
+  width: min(520px, calc(100vw - 48px));
+}
+
+.ui-dialog.pick-launch-exe-dialog .ui-dialog-body {
+  flex: 0 1 auto;
+  min-height: auto;
+  overflow: visible;
+}
+
+.pick-launch-exe-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.pick-launch-exe-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(127, 127, 127, 0.08);
+}
+
+.pick-launch-exe-path-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.pick-launch-exe-path-clear {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.pick-launch-exe-path-clear:hover {
+  background: rgba(127, 127, 127, 0.12);
+  color: inherit;
+}
+
+.pick-launch-exe-hint {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+html[data-theme="dark"] {
+  .pick-launch-exe-path {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .pick-launch-exe-path-clear {
+    color: #9aa0ab;
+  }
+
+  .pick-launch-exe-path-clear:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f2efe8;
+  }
+
+  .pick-launch-exe-hint {
+    color: #9aa0ab;
+  }
+}

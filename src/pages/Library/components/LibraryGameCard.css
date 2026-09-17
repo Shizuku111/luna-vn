@@ -1,0 +1,227 @@
+﻿.library-game-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px;
+  margin: -10px;
+  border-radius: 16px;
+  background: transparent;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.library-game-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 16px;
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .library-game-card::before {
+    transition:
+      opacity 0.2s ease,
+      transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .library-game-card:hover {
+    z-index: 2;
+  }
+
+  .library-game-card:hover::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.library-game-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(127, 127, 127, 0.12);
+  box-shadow: 0 4px 12px rgba(40, 30, 35, 0.08);
+}
+
+.library-game-cover img,
+.library-game-cover-empty {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.library-game-cover-shade {
+  position: absolute;
+  inset: auto 0 0;
+  height: 36%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(18, 16, 20, 0.5) 0%,
+    transparent 100%
+  );
+}
+
+.library-game-cover-badges {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+}
+
+.library-game-favorite-badge,
+.library-game-wishlist-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.library-game-favorite-badge {
+  color: var(--favorite);
+}
+
+.library-game-wishlist-badge {
+  color: var(--want-to-play);
+}
+
+.library-game-favorite-badge .ui-icon,
+.library-game-wishlist-badge .ui-icon {
+  font-size: 16px;
+}
+
+.library-game-status-icon {
+  position: absolute;
+  left: 8px;
+  bottom: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+}
+
+.library-game-status-icon .ui-icon {
+  font-size: 13px;
+}
+
+.library-game-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding-inline: 2px;
+}
+
+.library-game-title {
+  margin: 0;
+  font-size: 0.96rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.22;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.library-game-subtitle,
+.library-game-studio {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.library-game-subtitle {
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #6b7280;
+}
+
+.library-game-studio {
+  font-size: 0.74rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #9ca3af;
+}
+
+.library-favorite-active {
+  color: var(--favorite);
+}
+
+.library-wishlist-active {
+  color: var(--want-to-play);
+}
+
+.library-favorite-icon.is-favorite {
+  color: var(--favorite);
+}
+
+.library-favorite-icon.is-favorite path[fill]:not([fill="none"]) {
+  fill-opacity: 1;
+}
+
+.library-wishlist-icon.is-wishlist {
+  color: var(--want-to-play);
+}
+
+.library-wishlist-icon.is-wishlist path[fill]:not([fill="none"]) {
+  fill-opacity: 1;
+}
+
+html[data-theme="dark"] {
+  .library-game-cover {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.34);
+  }
+
+  .library-game-cover-shade {
+    background: linear-gradient(
+      to top,
+      rgba(8, 9, 12, 0.58) 0%,
+      transparent 100%
+    );
+  }
+
+  .library-game-status-icon {
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+  }
+
+  .library-game-cover-badges {
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+  }
+
+  .library-game-subtitle {
+    color: #9aa0ab;
+  }
+
+  .library-game-studio {
+    color: #7b8190;
+  }
+}

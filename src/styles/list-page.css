@@ -1,0 +1,125 @@
+.list-page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.list-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.list-toolbar-left-btn {
+  background: rgba(127, 127, 127, 0.06);
+  border-color: transparent;
+}
+
+.list-toolbar-left-btn:hover:not(:disabled):not(.is-disabled):not(.is-active),
+.list-toolbar-left-btn:focus-visible:not(:disabled):not(.is-disabled):not(.is-active) {
+  background: rgba(127, 127, 127, 0.1);
+}
+
+.list-page .select-trigger {
+  background: rgba(127, 127, 127, 0.06);
+  border-color: transparent;
+}
+
+.list-page .select-trigger:hover:not(:disabled),
+.list-page .select.is-open .select-trigger,
+.list-page .select-trigger:focus-visible {
+  background: rgba(127, 127, 127, 0.1);
+}
+
+.list-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.list-search.ui-input-wrap {
+  flex: 0 0 auto;
+  width: min(280px, 42vw);
+  background: rgba(127, 127, 127, 0.06);
+  border-color: transparent;
+}
+
+.list-search.ui-input-wrap:hover,
+.list-search.ui-input-wrap:focus-within {
+  background: rgba(127, 127, 127, 0.09);
+}
+
+.list-search .ui-input::-webkit-search-decoration,
+.list-search .ui-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.list-body {
+  flex: 1;
+  min-width: 0;
+  padding-top: var(--titlebar-height);
+}
+
+.list-empty {
+  margin: 48px auto 0;
+  max-width: 28rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.list-grid.virtual-card-grid {
+  margin: 0;
+}
+
+html[data-theme="dark"] {
+  .list-toolbar-left-btn {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .list-toolbar-left-btn:hover:not(:disabled):not(.is-disabled):not(.is-active),
+  .list-toolbar-left-btn:focus-visible:not(:disabled):not(.is-disabled):not(.is-active) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .list-page .select-trigger {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .list-page .select-trigger:hover:not(:disabled),
+  .list-page .select.is-open .select-trigger,
+  .list-page .select-trigger:focus-visible {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .list-search.ui-input-wrap {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .list-search.ui-input-wrap:hover,
+  .list-search.ui-input-wrap:focus-within {
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .list-empty {
+    color: #9aa0ab;
+  }
+}

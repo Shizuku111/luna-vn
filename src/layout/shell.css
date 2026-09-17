@@ -1,0 +1,109 @@
+﻿.app-shell {
+  --content-inset: 32px;
+  --content-inset-x: var(--content-inset);
+  --content-inset-right: 16px;
+  --glass-height-compact: var(--titlebar-height);
+  --glass-height-list: calc(var(--titlebar-height) + 40px);
+  --glass-height-duration: 0.42s;
+  --glass-height-easing: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-glassmorphism-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  right: var(--content-inset-right);
+  height: var(--glass-height-compact);
+  overflow: hidden;
+  pointer-events: none;
+  background: transparent;
+}
+
+.app-glassmorphism-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--glass-height-list);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(18px) saturate(1.05);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+}
+
+.app-shell[data-page="library"] .app-glassmorphism-overlay,
+.app-shell[data-page="characters"] .app-glassmorphism-overlay,
+.app-shell[data-page="persons"] .app-glassmorphism-overlay {
+  height: var(--glass-height-list);
+}
+
+.app-shell[data-has-overlay="true"] .app-glassmorphism-overlay {
+  height: 0;
+  z-index: 999;
+  opacity: 0;
+  transition:
+    height var(--glass-height-duration) var(--glass-height-easing),
+    opacity var(--glass-height-duration) ease;
+}
+
+.app-shell[data-has-overlay="true"] .page-sticky-toolbar {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.app-shell[data-has-overlay="true"][data-overlay-scrolled="true"]
+  .app-glassmorphism-overlay {
+  height: var(--glass-height-compact);
+  opacity: 1;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.app-content {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.app-content-body,
+.app-content-overlay {
+  position: absolute;
+  inset: 0;
+  padding: var(--titlebar-height) var(--content-inset-right) var(--content-inset)
+    var(--content-inset-x);
+  overflow: auto;
+}
+
+.app-content-body {
+  scrollbar-gutter: stable;
+}
+
+.app-content-overlay {
+  z-index: 30;
+  background-color: #ffffff;
+}
+
+html[data-theme="dark"] {
+  .app-content,
+  .app-content-overlay {
+    background-color: #1a1c22;
+  }
+
+  .app-glassmorphism-overlay::before {
+    background: rgba(26, 28, 34, 0.9);
+  }
+}

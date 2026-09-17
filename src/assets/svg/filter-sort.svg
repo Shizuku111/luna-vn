@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M19.5 4H4.5L10.5 12.5V20H13.5V12.5L19.5 4Z"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+  <path
+    d="M21.62 18.765 20 20.39 18.38 18.765M21.62 15.222 20 13.6 18.38 15.222"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="square"
+  />
+</svg>

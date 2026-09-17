@@ -1,0 +1,10 @@
+[[permission]]
+identifier = "allow-settings"
+description = "Allow settings-related maintenance commands such as clearing library data."
+commands.allow = [
+  "clear_library_data",
+  "clear_image_cache",
+  "open_image_cache_dir",
+  "quit_app",
+  "show_main_window",
+]

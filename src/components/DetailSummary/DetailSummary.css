@@ -1,0 +1,118 @@
+﻿.detail-summary {
+  position: relative;
+  max-width: 100%;
+}
+
+.detail-summary.is-fill {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.detail-summary.has-toggle {
+  padding-bottom: 1.7em;
+}
+
+.detail-summary.is-collapsed .detail-summary-body {
+  max-height: 120px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 48%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 48%,
+    transparent 100%
+  );
+}
+
+.detail-summary.is-fill.is-collapsed .detail-summary-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+}
+
+.detail-summary-text {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.detail-summary.is-empty .detail-summary-text {
+  color: #9ca3af;
+}
+
+.detail-summary-toggle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 0 8px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: none;
+  background: transparent;
+  color: var(--sakura);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.7;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.detail-summary-toggle:hover,
+.detail-summary-toggle:focus-visible {
+  background: color-mix(in srgb, var(--sakura) 14%, transparent);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.detail-summary-toggle:focus-visible {
+  box-shadow: var(--sakura-ring);
+}
+
+.detail-summary-toggle:active {
+  transform: translateY(0);
+  background: color-mix(in srgb, var(--sakura) 20%, transparent);
+}
+
+.detail-summary-toggle-label {
+  display: inline-block;
+}
+
+html[data-theme="dark"] {
+  .detail-summary-text {
+    color: #c5c9d1;
+  }
+
+  .detail-summary.is-empty .detail-summary-text {
+    color: #6b7280;
+  }
+}
+
+.detail-summary-dialog {
+  width: min(560px, 100%);
+}
+
+.detail-summary-dialog-text {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+html[data-theme="dark"] .detail-summary-dialog-text {
+  color: #c5c9d1;
+}

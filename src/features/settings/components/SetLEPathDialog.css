@@ -1,0 +1,9 @@
+.ui-dialog.set-le-path-dialog {
+  width: min(520px, calc(100vw - 48px));
+}
+
+.ui-dialog.set-le-path-dialog .ui-dialog-body {
+  flex: 0 1 auto;
+  min-height: auto;
+  overflow: visible;
+}

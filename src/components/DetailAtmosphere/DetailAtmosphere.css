@@ -1,0 +1,109 @@
+.detail-atmosphere {
+  --detail-atmosphere: 180, 140, 150;
+
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: min(520px, calc(58vh + var(--titlebar-height)));
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(var(--detail-atmosphere-y, 0px));
+  transition: opacity 0.55s ease;
+}
+
+.detail-atmosphere.has-cover {
+  opacity: 1;
+}
+
+.detail-atmosphere-blur {
+  position: absolute;
+  inset: -48px -8% auto;
+  height: 135%;
+  background-position: 22% 18%;
+  background-size: 68% auto;
+  background-repeat: no-repeat;
+  filter: blur(44px) saturate(1.25);
+  opacity: 0.34;
+  transform: scale(1.1);
+}
+
+.detail-atmosphere-wash {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 75% 70% at 18% 8%,
+      rgba(var(--detail-atmosphere), 0.24),
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse 55% 50% at 78% 4%,
+      rgba(var(--detail-atmosphere), 0.12),
+      transparent 70%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(var(--detail-atmosphere), 0.1) 0%,
+      rgba(var(--detail-atmosphere), 0.04) 46%,
+      transparent 80%
+    );
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+
+.detail-atmosphere.has-color .detail-atmosphere-wash {
+  opacity: 1;
+}
+
+.detail-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.28) var(--titlebar-height),
+    rgba(255, 255, 255, 0.72) 55%,
+    #ffffff 90%
+  );
+}
+
+html[data-theme="dark"] {
+  .detail-atmosphere::after {
+    background: linear-gradient(
+      to bottom,
+      rgba(26, 28, 34, 0.14) 0%,
+      rgba(26, 28, 34, 0.4) var(--titlebar-height),
+      rgba(26, 28, 34, 0.8) 55%,
+      #1a1c22 90%
+    );
+  }
+
+  .detail-atmosphere-blur {
+    opacity: 0.4;
+    filter: blur(46px) saturate(1.32);
+  }
+
+  .detail-atmosphere-wash {
+    background:
+      radial-gradient(
+        ellipse 75% 70% at 18% 8%,
+        rgba(var(--detail-atmosphere), 0.3),
+        transparent 68%
+      ),
+      radial-gradient(
+        ellipse 55% 50% at 78% 4%,
+        rgba(var(--detail-atmosphere), 0.16),
+        transparent 70%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(var(--detail-atmosphere), 0.14) 0%,
+        rgba(var(--detail-atmosphere), 0.05) 46%,
+        transparent 80%
+      );
+  }
+}

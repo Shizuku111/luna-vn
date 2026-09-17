@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="3.112 4.237 17.775 15.525" fill="none">
+  <g transform="translate(12 12) scale(1.5) translate(-7 -7)">
+    <rect
+      x="1.75"
+      y="2.5"
+      width="10.5"
+      height="9"
+      rx="1.5"
+      stroke="currentColor"
+      stroke-width="1.35"
+    />
+    <path
+      d="M1.75 4.75h10.5"
+      stroke="currentColor"
+      stroke-width="1.35"
+      stroke-linecap="round"
+    />
+    <path d="M6.1 6.35v3.3l3-1.65-3-1.65z" fill="currentColor" />
+  </g>
+</svg>

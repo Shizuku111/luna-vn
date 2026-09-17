@@ -1,0 +1,152 @@
+﻿.ui-dialog.edit-game-dialog {
+  max-height: min(92vh, 860px);
+}
+
+.ui-dialog.edit-game-dialog .ui-dialog-body {
+  flex: 0 1 auto;
+  min-height: auto;
+  overflow: visible;
+}
+
+.edit-game-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.edit-game-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.edit-game-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.edit-game-cover {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.edit-game-cover-preview {
+  width: 96px;
+  aspect-ratio: 2 / 3;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(127, 127, 127, 0.12);
+  flex-shrink: 0;
+}
+
+.edit-game-cover-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edit-game-cover-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #9ca3af;
+  font-size: 0.72rem;
+}
+
+.edit-game-cover-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-game-launch {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-game-launch-path {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 0 4px;
+}
+
+.edit-game-launch-path-text {
+  flex: 1;
+  min-width: 0;
+  color: #6b7280;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.edit-game-launch-path-clear {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease,
+    color 0.15s ease;
+}
+
+.edit-game-launch-path-clear:hover {
+  opacity: 1;
+  color: inherit;
+  background: rgba(127, 127, 127, 0.12);
+}
+
+.edit-game-launch-path-clear:active {
+  background: rgba(127, 127, 127, 0.18);
+}
+
+.edit-game-launch-path-clear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+html[data-theme="dark"] {
+  .edit-game-label,
+  .edit-game-launch-path-text,
+  .edit-game-cover-empty {
+    color: #9aa0ab;
+  }
+
+  .edit-game-cover-preview {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .edit-game-launch-path-clear {
+    color: #9aa0ab;
+  }
+
+  .edit-game-launch-path-clear:hover {
+    color: #f2efe8;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .edit-game-launch-path-clear:active {
+    background: rgba(255, 255, 255, 0.16);
+  }
+}

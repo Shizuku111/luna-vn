@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="3.788 4.237 14.925 17.025" fill="none">
+  <g transform="translate(12 12) scale(1.5) translate(-7 -7)">
+    <path
+      d="M3.2 2.5h5.1l2.5 2.5v6.5c0 .55-.45 1-1 1H3.2c-.55 0-1-.45-1-1v-8c0-.55.45-1 1-1z"
+      stroke="currentColor"
+      stroke-width="1.35"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M8.2 2.5V5h2.6"
+      stroke="currentColor"
+      stroke-width="1.35"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M4.6 7.4h4.8M4.6 9.6h3.2"
+      stroke="currentColor"
+      stroke-width="1.35"
+      stroke-linecap="round"
+    />
+  </g>
+</svg>

@@ -1,0 +1,53 @@
+.detail-toolbar {
+  --detail-toolbar-gap: 10px;
+  --detail-toolbar-close-size: 52px;
+
+  position: absolute;
+  top: 0;
+  right: var(--content-inset-right);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--detail-toolbar-gap);
+  pointer-events: auto;
+}
+
+.detail-toolbar-close,
+.detail-toolbar-bangumi,
+.detail-toolbar-more,
+.detail-toolbar-more-btn {
+  flex-shrink: 0;
+}
+
+.detail-toolbar .ui-btn .ui-icon {
+  font-size: 20px;
+}
+
+.detail-toolbar .ui-btn.detail-toolbar-close {
+  width: var(--detail-toolbar-close-size);
+  height: var(--detail-toolbar-close-size);
+}
+
+.detail-toolbar .ui-btn.detail-toolbar-close .ui-icon {
+  font-size: 22px;
+}
+
+.detail-toolbar .ui-tooltip-trigger {
+  flex-shrink: 0;
+}
+
+.detail-toolbar-bangumi-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.detail-toolbar-more {
+  display: flex;
+}
+
+.detail-toolbar-more .dropdown-panel {
+  min-width: 168px;
+}

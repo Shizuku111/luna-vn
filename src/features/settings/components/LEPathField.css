@@ -1,0 +1,117 @@
+﻿.le-path-field {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.le-path-field-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.le-path-field-label {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.le-path-field-hint {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #6b7280;
+}
+
+.le-path-field-control {
+  flex: 1;
+  min-width: 0;
+  max-width: min(520px, 62%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.le-path-field-control .le-path-field-input {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.le-path-field-control .le-path-field-input .ui-input {
+  cursor: pointer;
+}
+
+.le-path-field-control .le-path-field-input:has(.ui-input:disabled) {
+  cursor: not-allowed;
+}
+
+.le-path-field-control .ui-input:disabled {
+  cursor: not-allowed;
+}
+
+.le-path-field-clear {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(127, 127, 127, 0.12);
+  color: #6b7280;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.le-path-field-clear:hover {
+  color: inherit;
+  background: rgba(127, 127, 127, 0.2);
+}
+
+.le-path-field-clear:active {
+  background: rgba(127, 127, 127, 0.28);
+}
+
+.le-path-field-clear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.le-path-field--dialog {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.le-path-field--dialog .le-path-field-control {
+  max-width: none;
+  width: 100%;
+}
+
+html[data-theme="dark"] {
+  .le-path-field-hint {
+    color: #9ca3af;
+  }
+
+  .le-path-field-clear {
+    background: rgba(255, 255, 255, 0.1);
+    color: #9ca3af;
+  }
+
+  .le-path-field-clear:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: inherit;
+  }
+}

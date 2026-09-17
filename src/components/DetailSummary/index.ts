@@ -1,0 +1,1 @@
+export { DetailSummary } from "./DetailSummary";

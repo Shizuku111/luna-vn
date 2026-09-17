@@ -1,0 +1,150 @@
+﻿.ui-input-wrap {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  border: 1px solid rgba(127, 127, 127, 0.18);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.ui-input-wrap:hover {
+  border-color: rgba(91, 124, 153, 0.35);
+}
+
+.ui-input-wrap:focus-within {
+  border-color: rgba(242, 166, 188, 0.55);
+  box-shadow: var(--sakura-ring);
+}
+
+.ui-input-wrap--small {
+  height: var(--control-size-small);
+  padding: 0 12px;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+.ui-input-wrap--medium {
+  height: var(--control-size-medium);
+  padding: 0 14px;
+  gap: 8px;
+  font-size: 0.88rem;
+}
+
+.ui-input-wrap--large {
+  height: var(--control-size-large);
+  padding: 0 16px;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.ui-input-prefix {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.48;
+  color: inherit;
+}
+
+.ui-input-prefix svg {
+  font-size: 14px;
+}
+
+.ui-input-clear {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(127, 127, 127, 0.16);
+  color: inherit;
+  opacity: 0.72;
+  cursor: pointer;
+  transition:
+    opacity 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.ui-input-clear:hover {
+  opacity: 1;
+  background: rgba(127, 127, 127, 0.28);
+}
+
+.ui-input-clear:active {
+  background: rgba(127, 127, 127, 0.36);
+}
+
+.ui-input-clear .ui-icon {
+  font-size: 12px;
+}
+
+.ui-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+}
+
+.ui-input::-webkit-search-decoration,
+.ui-input::-webkit-search-cancel-button,
+.ui-input::-webkit-search-results-button,
+.ui-input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ui-input::placeholder {
+  color: rgba(42, 45, 52, 0.42);
+}
+
+html[data-theme="dark"] {
+  .ui-input-wrap {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .ui-input-wrap:hover {
+    border-color: rgba(143, 176, 201, 0.45);
+  }
+
+  .ui-input-wrap:focus-within {
+    border-color: rgba(242, 166, 188, 0.55);
+    box-shadow: 0 0 0 3px rgba(242, 166, 188, 0.12);
+  }
+
+  .ui-input-clear {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .ui-input-clear:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .ui-input-clear:active {
+    background: rgba(255, 255, 255, 0.26);
+  }
+
+  .ui-input::placeholder {
+    color: rgba(242, 239, 232, 0.4);
+  }
+}

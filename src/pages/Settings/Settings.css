@@ -1,0 +1,190 @@
+﻿.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  max-width: none;
+  padding-top: 20px;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-inline: 2px;
+}
+
+.settings-section-icon {
+  width: 96px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.settings-section-label {
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: inherit;
+}
+
+.settings-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  border: 1px solid rgba(127, 127, 127, 0.18);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.settings-block-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.settings-block-error {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--danger);
+}
+
+.settings-bangumi-login {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 20px;
+}
+
+.settings-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+}
+
+.settings-row + .settings-row {
+  border-top: 1px solid rgba(127, 127, 127, 0.18);
+}
+
+.settings-account {
+  gap: 16px;
+}
+
+.settings-account-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #f0f0f2;
+}
+
+.settings-account-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-account-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.settings-account-name {
+  font-size: 1rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-account-id {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.settings-account-expiry {
+  margin: 0;
+  font-size: 0.86rem;
+  color: #6b7280;
+}
+
+.settings-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-row-label {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.settings-row-hint {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #6b7280;
+}
+
+.settings-row-control {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: var(--control-size-medium);
+}
+
+.settings-concurrency-input.ui-input-wrap {
+  width: 88px;
+}
+
+.settings-row .le-path-field {
+  width: 100%;
+}
+
+html[data-theme="dark"] {
+  .settings-block {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .settings-row + .settings-row {
+    border-top-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .settings-row-hint {
+    color: #9aa0ab;
+  }
+
+  .settings-account-avatar {
+    background: #3a3d45;
+  }
+
+  .settings-account-id,
+  .settings-account-expiry {
+    color: #9aa0ab;
+  }
+}

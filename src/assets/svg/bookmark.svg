@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <g id="aiebookmark">
+    <path
+      id="fill1"
+      d="M5 4H19V21L12 16L5 21V4Z"
+      fill="currentColor"
+      fill-opacity="0"
+    />
+    <path
+      id="stroke1"
+      d="M5 4H19V21L12 16L5 21V4Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="square"
+      stroke-linejoin="round"
+    />
+  </g>
+</svg>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="2.49 6.193 19.02 14.103" fill="none">
+  <g transform="translate(12 12.5) scale(1.55) translate(-7 -7.5)">
+    <g transform="translate(7 12.05) rotate(-7) translate(-7 -12.05)">
+      <path
+        d="M7 12.05S2.1 8.9 2.1 5.55A2.75 2.75 0 0 1 7 3.85"
+        stroke="currentColor"
+        stroke-width="0.96"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M7 4.55 5.9 5.85 7.2 7.05 5.95 8.35 7 9.55"
+        stroke="currentColor"
+        stroke-width="0.88"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
+    <g transform="translate(7 12.05) rotate(7) translate(-7 -12.05)">
+      <path
+        d="M7 3.85a2.75 2.75 0 0 1 4.9 1.7C11.9 8.9 7 12.05 7 12.05"
+        stroke="currentColor"
+        stroke-width="0.96"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M7 4.55 8.1 5.85 6.8 7.05 8.05 8.35 7 9.55"
+        stroke="currentColor"
+        stroke-width="0.88"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
+  </g>
+</svg>

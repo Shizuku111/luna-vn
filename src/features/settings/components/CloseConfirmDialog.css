@@ -1,0 +1,31 @@
+.close-confirm-dialog {
+  width: min(360px, 100%);
+}
+
+.close-confirm-dialog .ui-dialog-body {
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+
+.close-confirm-radios {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.close-confirm-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.close-confirm-footer .ui-dialog-footer-actions {
+  margin-left: auto;
+}
+
+.close-confirm-footer .ui-checkbox {
+  flex-shrink: 0;
+}

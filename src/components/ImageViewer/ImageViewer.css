@@ -1,0 +1,110 @@
+.ui-image-viewer-root {
+  position: fixed;
+  inset: 0;
+  z-index: 1900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.ui-image-viewer-mask {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: rgba(12, 14, 20, 0.82);
+  cursor: default;
+}
+
+.ui-image-viewer {
+  --ui-image-viewer-close-size: 36px;
+  --ui-image-viewer-gutter: calc(
+    var(--ui-image-viewer-close-size) * 2 + 40px
+  );
+
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: calc(50vw + var(--ui-image-viewer-gutter));
+  height: calc(100vh - (var(--titlebar-height) * 2 + 40px));
+  max-width: calc(50vw + var(--ui-image-viewer-gutter));
+  max-height: calc(100vh - (var(--titlebar-height) * 2 + 40px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0 calc(var(--ui-image-viewer-gutter) / 2);
+  overflow: visible;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  animation: ui-image-viewer-in 0.18s ease;
+}
+
+.ui-image-viewer-stage {
+  box-sizing: border-box;
+  width: 50vw;
+  height: 100%;
+  max-width: 50vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ui-image-viewer-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  width: var(--ui-image-viewer-close-size);
+  height: var(--ui-image-viewer-close-size);
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.ui-image-viewer-close:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.ui-image-viewer-close:active {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.ui-image-viewer-image {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@keyframes ui-image-viewer-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

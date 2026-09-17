@@ -1,0 +1,148 @@
+.ui-tile {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(127, 127, 127, 0.04);
+}
+
+.ui-tile--side-right {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.ui-tile--side-right .ui-tile-meta {
+  align-items: flex-end;
+}
+
+.ui-tile--plain {
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: transparent;
+}
+
+.ui-tile.is-clickable {
+  cursor: pointer;
+  transition: background-color 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ui-tile.is-clickable:hover {
+  background: rgba(127, 127, 127, 0.12);
+}
+
+.ui-tile--plain.is-clickable:hover {
+  background: rgba(127, 127, 127, 0.1);
+}
+
+.ui-tile-media {
+  flex-shrink: 0;
+  overflow: hidden;
+  background: rgba(127, 127, 127, 0.12);
+}
+
+.ui-tile--image-circle .ui-tile-media {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+}
+
+.ui-tile--image-cover .ui-tile-media {
+  position: relative;
+  width: 48px;
+  height: 100%;
+  aspect-ratio: 2 / 3;
+  align-self: center;
+  border-radius: 8px;
+}
+
+.ui-tile-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ui-tile--image-circle .ui-tile-media img {
+  object-position: center top;
+}
+
+.ui-tile--image-cover .ui-tile-media img,
+.ui-tile--image-cover .ui-tile-media-empty {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ui-tile-media-empty {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ui-tile-meta {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ui-tile-title,
+.ui-tile-line {
+  max-width: 100%;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.ui-tile-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.ui-tile-line {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-theme="dark"] {
+  .ui-tile {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .ui-tile--plain {
+    background: transparent;
+  }
+
+  .ui-tile.is-clickable:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .ui-tile--plain.is-clickable:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .ui-tile-media {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .ui-tile-line {
+    color: #9aa0ab;
+  }
+}
