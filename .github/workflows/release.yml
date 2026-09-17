@@ -46,5 +46,5 @@ jobs:
             下载下方安装包安装即可。
 
             - Windows：`.exe`（NSIS）或 `.msi`
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
