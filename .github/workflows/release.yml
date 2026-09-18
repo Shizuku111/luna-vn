@@ -43,6 +43,9 @@ jobs:
           tagName: v__VERSION__
           releaseName: Luna VN v__VERSION__
           releaseBody: |
+            ## 更新说明
+            - 加入应用内更新支持：启动时自动检查新版本，可在设置「关于」中下载并安装
+
             下载下方安装包安装即可。
 
             - Windows：`.exe`（NSIS）或 `.msi`

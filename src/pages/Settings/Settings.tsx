@@ -465,7 +465,7 @@ export function SettingsPage({
               <span className="settings-row-hint">
                 {updateAvailable && latestVersion
                   ? `发现新版本 ${latestVersion}`
-                  : "Luna VN 桌面应用"}
+                  : ""}
               </span>
             </div>
             <div className="settings-row-control settings-about-control">
@@ -484,11 +484,6 @@ export function SettingsPage({
             <div className="settings-row-text">
               <span className="settings-row-label">
                 {updateAvailable ? "应用更新" : "检查更新"}
-              </span>
-              <span className="settings-row-hint">
-                {updateAvailable
-                  ? "下载安装包并启动安装程序，完成后应用会自动退出"
-                  : "从 GitHub Releases 检查是否有新版本"}
               </span>
             </div>
             <div className="settings-row-control">
