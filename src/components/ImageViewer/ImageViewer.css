@@ -28,7 +28,6 @@
 
   position: relative;
   z-index: 1;
-  box-sizing: border-box;
   width: calc(50vw + var(--ui-image-viewer-gutter));
   height: calc(100vh - (var(--titlebar-height) * 2 + 40px));
   max-width: calc(50vw + var(--ui-image-viewer-gutter));
@@ -47,7 +46,6 @@
 }
 
 .ui-image-viewer-stage {
-  box-sizing: border-box;
   width: 50vw;
   height: 100%;
   max-width: 50vw;

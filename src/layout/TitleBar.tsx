@@ -5,6 +5,8 @@ import {
   WindowMaximizeIcon,
   WindowMinimizeIcon,
 } from "@/components/icons";
+import { Tag } from "@/components/Tag";
+import { useAppUpdate } from "@/features/update";
 import { TitleBarSearch } from "./TitleBarSearch";
 import { NAV_ITEMS, type AppPage } from "./nav";
 import "./TitleBar.css";
@@ -28,6 +30,8 @@ export function TitleBar({
   onOpenCharacter,
   onOpenPerson,
 }: TitleBarProps) {
+  const { updateAvailable } = useAppUpdate();
+
   return (
     <header className="titlebar" data-tauri-drag-region>
       <div className="titlebar-leading" data-tauri-drag-region>
@@ -60,17 +64,29 @@ export function TitleBar({
       />
 
       <div className="titlebar-controls">
-        <button
-          type="button"
-          className={`titlebar-btn titlebar-btn-settings${
-            page === "settings" ? " is-active" : ""
-          }`}
-          aria-label="设置"
-          aria-current={page === "settings" ? "page" : undefined}
-          onClick={() => onNavigate("settings")}
-        >
-          <SettingsIcon aria-hidden className="titlebar-btn-settings-icon" />
-        </button>
+        <div className="titlebar-settings-group">
+          <button
+            type="button"
+            className={`titlebar-btn titlebar-btn-settings${
+              page === "settings" ? " is-active" : ""
+            }`}
+            aria-label="设置"
+            aria-current={page === "settings" ? "page" : undefined}
+            onClick={() => onNavigate("settings")}
+          >
+            <SettingsIcon aria-hidden className="titlebar-btn-settings-icon" />
+          </button>
+          {updateAvailable ? (
+            <Tag
+              className="titlebar-update-tag"
+              theme="primary"
+              size="small"
+              content="有可用更新"
+              aria-label="有可用更新，前往设置"
+              onClick={() => onNavigate("settings")}
+            />
+          ) : null}
+        </div>
         <button
           type="button"
           className="titlebar-btn"

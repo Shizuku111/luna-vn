@@ -162,6 +162,18 @@
   width: 88px;
 }
 
+.settings-about-control {
+  gap: 10px;
+}
+
+.settings-version {
+  font-family: "Outfit", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: inherit;
+}
+
 .settings-row .le-path-field {
   width: 100%;
 }

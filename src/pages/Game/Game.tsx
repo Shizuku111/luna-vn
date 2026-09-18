@@ -11,6 +11,7 @@ import { MessagePlugin } from "@/components/Message";
 import { ImageViewer } from "@/components/ImageViewer";
 import { Switch } from "@/components/Switch";
 import { Tabs } from "@/components/Tabs";
+import { Tag } from "@/components/Tag";
 import { Tooltip } from "@/components/Tooltip";
 import {
   asInfobox,
@@ -903,14 +904,13 @@ export function GamePage({
                     <ul className="game-page-tag-list">
                       {current.tags.map((tag) => (
                         <li key={tag}>
-                          <button
-                            type="button"
-                            className="game-page-tag"
+                          <Tag
+                            theme="default"
+                            size="medium"
+                            content={tag}
                             title={`在Bangumi打开：${tag}`}
                             onClick={() => handleOpenBangumiTag(tag)}
-                          >
-                            {tag}
-                          </button>
+                          />
                         </li>
                       ))}
                     </ul>

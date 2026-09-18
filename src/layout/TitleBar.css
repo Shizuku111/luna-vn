@@ -1,10 +1,9 @@
-﻿.titlebar {
+.titlebar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  box-sizing: border-box;
   height: var(--titlebar-height);
   display: flex;
   align-items: center;
@@ -146,8 +145,20 @@
   cursor: pointer;
 }
 
+.titlebar-settings-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 14px;
+  flex-shrink: 0;
+}
+
 .titlebar-btn-settings {
-  margin-right: 20px;
+  margin-right: 0;
+}
+
+.titlebar-update-tag {
+  flex-shrink: 0;
 }
 
 .titlebar-btn-settings-icon {

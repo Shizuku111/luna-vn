@@ -1,4 +1,4 @@
-﻿.entity-page {
+.entity-page {
   --entity-aside-width: 288px;
   --entity-section-gap: 32px;
   --entity-close-size: 52px;
@@ -369,7 +369,6 @@ button.entity-related-item:hover {
   max-width: 100%;
   min-width: 0;
   height: auto;
-  box-sizing: border-box;
 }
 
 .entity-participation-tags {

@@ -1,10 +1,9 @@
-﻿.home-page {
+.home-page {
   display: flex;
   align-items: stretch;
   gap: 20px;
   height: 100%;
   min-height: 0;
-  box-sizing: border-box;
 }
 
 .home-empty {
@@ -70,7 +69,6 @@
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.55);
   overflow: hidden;
-  box-sizing: border-box;
 }
 
 .home-secondary-header {
@@ -100,7 +98,6 @@
   margin: 0;
   padding: 10px 14px 14px;
   list-style: none;
-  box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(var(--home-recent-cols), minmax(0, 1fr));
   gap: var(--home-recent-gap);
@@ -117,7 +114,6 @@
   height: auto;
   padding: 10px;
   margin: -10px;
-  box-sizing: border-box;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -176,7 +172,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-sizing: border-box;
   padding: 10px 14px 14px;
   min-height: var(--home-recent-row-min);
 }

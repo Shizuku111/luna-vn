@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   font-family: "Outfit", "Segoe UI", sans-serif;
   font-size: 16px;
   line-height: 1.5;
@@ -203,7 +203,6 @@ img {
   position: sticky;
   top: 0;
   z-index: 10;
-  box-sizing: border-box;
   margin-top: calc(
     -1 * (var(--titlebar-height) + var(--content-below-titlebar))
   );

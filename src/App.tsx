@@ -17,6 +17,7 @@ import {
   BangumiConcurrencyBootstrap,
   CloseBehaviorBootstrap,
 } from "@/features/settings";
+import { AppUpdateProvider } from "@/features/update";
 import { Layout, type AppPage } from "@/layout";
 import type { DetailOpenOrigin } from "@/components/DetailOverlay";
 import { EntityOverlay, type EntityKind } from "@/pages/Entity";
@@ -295,9 +296,13 @@ function App() {
       <AppearanceBootstrap />
       <BangumiConcurrencyBootstrap />
       <CloseBehaviorBootstrap />
-      <BangumiProvider
+      <AppUpdateProvider
         content={
-          <LibraryGamesProvider content={<AppContent />} />
+          <BangumiProvider
+            content={
+              <LibraryGamesProvider content={<AppContent />} />
+            }
+          />
         }
       />
     </>

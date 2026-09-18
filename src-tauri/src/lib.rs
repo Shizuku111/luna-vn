@@ -9,6 +9,7 @@ mod image_util;
 mod persons;
 mod settings;
 mod tray;
+mod update;
 
 use tauri::Manager;
 
@@ -101,7 +102,9 @@ pub fn run() {
             persons::save_library_persons,
             persons::upsert_library_person,
             persons::link_person_relations_by_bangumi,
-            persons::update_library_person_favorite
+            persons::update_library_person_favorite,
+            update::check_app_update,
+            update::download_and_install_update
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

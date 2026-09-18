@@ -2,7 +2,6 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  box-sizing: border-box;
   max-width: 100%;
   min-width: 0;
   height: 100%;

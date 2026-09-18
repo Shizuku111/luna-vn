@@ -6,6 +6,7 @@ import { Input } from "@/components/Input";
 import { MessagePlugin } from "@/components/Message";
 import { Select } from "@/components/Select";
 import { Switch } from "@/components/Switch";
+import { Tag } from "@/components/Tag";
 import { useBangumiController } from "@/features/bangumi";
 import {
   APPEARANCE_MODE_OPTIONS,
@@ -19,6 +20,7 @@ import {
   openImageCacheDir,
   useSettingsController,
 } from "@/features/settings";
+import { useAppUpdate } from "@/features/update";
 import { toErrorMessage } from "@/utils/errorMessage";
 import "./Settings.css";
 
@@ -65,6 +67,15 @@ export function SettingsPage({
   const [bangumiConcurrentDraft, setBangumiConcurrentDraft] = useState(
     String(bangumiMaxConcurrent),
   );
+  const {
+    currentVersion,
+    latestVersion,
+    updateAvailable,
+    checking: checkingUpdate,
+    installing: installingUpdate,
+    checkForUpdate,
+    installUpdate,
+  } = useAppUpdate();
 
   useEffect(() => {
     setBangumiConcurrentDraft(String(bangumiMaxConcurrent));
@@ -438,6 +449,77 @@ export function SettingsPage({
                 onClick={handleOpenImageCacheDir}
                 content={openingCacheDir ? "打开中…" : "打开缓存目录"}
               />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="settings-section" id="settings-about">
+        <header className="settings-section-header">
+          <h2 className="settings-section-label">关于</h2>
+        </header>
+        <div className="settings-block">
+          <div className="settings-row">
+            <div className="settings-row-text">
+              <span className="settings-row-label">当前版本</span>
+              <span className="settings-row-hint">
+                {updateAvailable && latestVersion
+                  ? `发现新版本 ${latestVersion}`
+                  : "Luna VN 桌面应用"}
+              </span>
+            </div>
+            <div className="settings-row-control settings-about-control">
+              <span className="settings-version">{currentVersion}</span>
+              {updateAvailable ? (
+                <Tag
+                  theme="primary"
+                  size="small"
+                  content="有可用更新"
+                  interactive={false}
+                />
+              ) : null}
+            </div>
+          </div>
+          <div className="settings-row">
+            <div className="settings-row-text">
+              <span className="settings-row-label">
+                {updateAvailable ? "应用更新" : "检查更新"}
+              </span>
+              <span className="settings-row-hint">
+                {updateAvailable
+                  ? "下载安装包并启动安装程序，完成后应用会自动退出"
+                  : "从 GitHub Releases 检查是否有新版本"}
+              </span>
+            </div>
+            <div className="settings-row-control">
+              {updateAvailable ? (
+                <Button
+                  theme="primary"
+                  disabled={installingUpdate || checkingUpdate}
+                  onClick={() => {
+                    void installUpdate();
+                  }}
+                  content={installingUpdate ? "下载中…" : "下载并更新"}
+                />
+              ) : (
+                <Button
+                  disabled={checkingUpdate || installingUpdate}
+                  onClick={() => {
+                    void (async () => {
+                      const info = await checkForUpdate();
+                      if (!info) return;
+                      if (info.updateAvailable) {
+                        MessagePlugin.success(
+                          `发现新版本 ${info.latestVersion}`,
+                        );
+                      } else {
+                        MessagePlugin.success("当前已是最新版本");
+                      }
+                    })();
+                  }}
+                  content={checkingUpdate ? "检查中…" : "检查更新"}
+                />
+              )}
             </div>
           </div>
         </div>

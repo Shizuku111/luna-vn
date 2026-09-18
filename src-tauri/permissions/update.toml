@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-update"
+description = "Allow checking for application updates and installing them."
+commands.allow = ["check_app_update", "download_and_install_update"]
