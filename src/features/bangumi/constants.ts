@@ -2,7 +2,9 @@ export const BANGUMI_API_BASE = "https://api.bgm.tv";
 export const BANGUMI_OAUTH_BASE = "https://bgm.tv";
 export const BANGUMI_TOKEN_CREATE_URL =
   "https://next.bgm.tv/demo/access-token/create";
-export const BANGUMI_USER_AGENT = "luna-vn/0.1.0";
+import packageJson from "../../../package.json";
+
+export const BANGUMI_USER_AGENT = `luna-vn/${packageJson.version}`;
 export const BANGUMI_MAX_CONCURRENT = 5;
 export const BANGUMI_SUBJECT_TYPE_GAME = 4;
 

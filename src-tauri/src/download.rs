@@ -1,3 +1,5 @@
+pub const APP_USER_AGENT: &str = concat!("luna-vn/", env!("LUNA_VN_VERSION"));
+
 fn is_allowed_download_url(url: &str) -> bool {
     let Ok(parsed) = reqwest::Url::parse(url.trim()) else {
         return false;

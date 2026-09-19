@@ -159,7 +159,7 @@ pub(crate) fn download_cover_to_dir(
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(30))
         .redirect(crate::download::download_redirect_policy())
-        .user_agent("luna-vn/0.1.1")
+        .user_agent(crate::download::APP_USER_AGENT)
         .build()
         .map_err(|err| format!("创建下载客户端失败：{}", err))?;
 
