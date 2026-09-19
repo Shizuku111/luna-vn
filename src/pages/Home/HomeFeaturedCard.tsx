@@ -57,11 +57,11 @@ export function HomeFeaturedCard({
   const sourceLabel = resolveFeaturedSourceLabel(source, sourceAt);
 
   useEffect(() => {
-    setCoverRatio(FALLBACK_COVER_RATIO);
     if (!coverUrl) return;
 
     let cancelled = false;
     const img = new Image();
+    img.referrerPolicy = "no-referrer";
     img.onload = () => {
       if (cancelled) return;
       if (img.naturalWidth > 0 && img.naturalHeight > 0) {
@@ -94,11 +94,12 @@ export function HomeFeaturedCard({
   return (
     <article className="home-featured-card" onClick={handleOpen}>
       {coverUrl ? (
-        <div
-          className="home-featured-card-bg"
-          style={{ backgroundImage: `url(${coverUrl})` }}
-          aria-hidden
-        />
+        <div className="home-featured-card-bg" aria-hidden>
+          <div
+            className="home-featured-card-bg-image"
+            style={{ backgroundImage: `url("${coverUrl.replace(/"/g, '\\"')}")` }}
+          />
+        </div>
       ) : (
         <div className="home-featured-card-bg is-empty" aria-hidden />
       )}

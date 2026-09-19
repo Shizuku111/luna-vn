@@ -14,6 +14,7 @@ import { toUpdateLibraryGameSubject, updateLibraryGame } from "../libraryStore";
 import { resolveGameCoverUrl } from "../resolveGameCoverUrl";
 import type { LibraryGame } from "../types";
 import { toErrorMessage } from "@/utils/errorMessage";
+import { parentDirectory } from "@/utils/filePath";
 import "./EditGameDialog.css";
 
 export type EditGameDialogProps = {
@@ -92,6 +93,7 @@ export function EditGameDialog({
       title: "选择启动程序",
       multiple: false,
       directory: false,
+      defaultPath: parentDirectory(launchPath),
       filters: [{ name: "可执行文件", extensions: ["exe"] }],
     });
 

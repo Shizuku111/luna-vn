@@ -2,6 +2,7 @@
 mod bangumi_token;
 mod characters;
 mod db;
+mod dialog;
 mod download;
 mod games;
 mod image_cache;
@@ -104,7 +105,8 @@ pub fn run() {
             persons::link_person_relations_by_bangumi,
             persons::update_library_person_favorite,
             update::check_app_update,
-            update::download_and_install_update
+            update::download_and_install_update,
+            dialog::pick_file_at_default
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -339,6 +339,33 @@ export function GamePage({
 
   const current = game;
   const { title, subtitle } = resolveGameListNames(current, showOriginalName);
+
+  async function handleCopyTitle() {
+    const text = title.trim();
+    if (!text) {
+      MessagePlugin.error("复制失败");
+      return;
+    }
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.left = "-9999px";
+        document.body.appendChild(area);
+        area.select();
+        const ok = document.execCommand("copy");
+        area.remove();
+        if (!ok) throw new Error("copy failed");
+      }
+      MessagePlugin.success("已复制");
+    } catch {
+      MessagePlugin.error("复制失败");
+    }
+  }
   const summary = current.summary?.trim() ?? "";
   const lastLaunchedDate = parseGameLogDate(current.lastLaunchedAt ?? "");
   const lastLaunchedText = lastLaunchedDate
@@ -700,8 +727,29 @@ export function GamePage({
           <div className="game-page-col-side">
             <div className="game-page-hero">
               <div className="game-page-title-block">
-                <h1 className="game-page-title" title={title}>
-                  <span className="game-page-title-text">{title}</span>
+                <h1 className="game-page-title">
+                  <Tooltip
+                    content="点击复制"
+                    placement="top"
+                    delay={120}
+                    className="game-page-title-copy"
+                  >
+                    <span
+                      className="game-page-title-text"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        void handleCopyTitle();
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key !== "Enter" && event.key !== " ") return;
+                        event.preventDefault();
+                        void handleCopyTitle();
+                      }}
+                    >
+                      {title}
+                    </span>
+                  </Tooltip>
                 </h1>
                 <p
                   className={[

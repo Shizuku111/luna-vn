@@ -4,6 +4,7 @@ import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { Button } from "@/components/Button";
 import { Dialog } from "@/components/Dialog";
 import { CloseIcon, SelectAppIcon } from "@/components/icons";
+import { parentDirectory } from "@/utils/filePath";
 import "./PickLaunchExeDialog.css";
 
 export type PickLaunchExeDialogOptions = {
@@ -37,6 +38,7 @@ function PickLaunchExeDialogView({
       title: "选择启动程序",
       multiple: false,
       directory: false,
+      defaultPath: parentDirectory(path),
       filters: [{ name: "可执行文件", extensions: ["exe"] }],
     });
     if (typeof selected === "string") {

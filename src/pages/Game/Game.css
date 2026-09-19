@@ -610,6 +610,13 @@
   color: var(--danger);
 }
 
+.game-page-title-copy {
+  display: inline-block;
+  width: max-content;
+  max-width: 100%;
+  cursor: pointer;
+}
+
 .game-page-title {
   margin: 0;
   display: flex;
@@ -628,7 +635,8 @@
   -webkit-line-clamp: 2;
   line-clamp: 2;
   overflow: hidden;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   overflow-wrap: anywhere;
   word-break: break-all;
   line-break: strict;

@@ -7,30 +7,34 @@
   cursor: pointer;
   color: #fff;
   isolation: isolate;
-  container-type: size;
-  container-name: featured;
 }
 
 .home-featured-card-bg {
   position: absolute;
   inset: -20px;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+  z-index: 0;
+  overflow: hidden;
   filter: blur(18px) saturate(1.1);
   transform: scale(1.06);
-  z-index: 0;
-  animation: home-featured-fade-in 0.55s ease both;
   transition:
     transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
     filter 0.85s ease;
-  will-change: transform;
+}
+
+.home-featured-card-bg-image {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .home-featured-card-bg.is-empty {
+  opacity: 1;
   filter: none;
   transform: none;
   inset: 0;
+  overflow: visible;
   background: linear-gradient(135deg, #c9a3ad 0%, #8b7380 100%);
 }
 

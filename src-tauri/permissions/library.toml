@@ -43,4 +43,5 @@ commands.allow = [
   "save_library_persons",
   "ensure_entity_image",
   "resolve_entity_image",
+  "pick_file_at_default",
 ]

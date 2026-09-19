@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
-import { convertFileSrc } from "@tauri-apps/api/core";
-import { open as openDialog } from "@tauri-apps/plugin-dialog";
+import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { CloseIcon, SelectAppIcon } from "@/components/icons";
 import { Button } from "@/components/Button";
 import { Dialog } from "@/components/Dialog";
@@ -35,6 +34,13 @@ const IMPORT_TABS = [
   { key: "bangumi", label: "从 Bangumi 导入" },
   { key: "manual", label: "手动导入" },
 ] as const;
+
+function pickFileAtDefault(
+  title: string,
+  filters: { name: string; extensions: string[] }[],
+) {
+  return invoke<string | null>("pick_file_at_default", { title, filters });
+}
 
 export function SingleImportDialog({
   open,
@@ -95,12 +101,9 @@ export function SingleImportDialog({
   }
 
   async function handlePickBangumiLaunchExe() {
-    const selected = await openDialog({
-      title: "选择启动程序",
-      multiple: false,
-      directory: false,
-      filters: [{ name: "可执行文件", extensions: ["exe"] }],
-    });
+    const selected = await pickFileAtDefault("选择启动程序", [
+      { name: "可执行文件", extensions: ["exe"] },
+    ]);
 
     if (typeof selected === "string") {
       setLaunchPath(selected);
@@ -109,12 +112,9 @@ export function SingleImportDialog({
   }
 
   async function handlePickManualLaunchExe() {
-    const selected = await openDialog({
-      title: "选择启动程序",
-      multiple: false,
-      directory: false,
-      filters: [{ name: "可执行文件", extensions: ["exe"] }],
-    });
+    const selected = await pickFileAtDefault("选择启动程序", [
+      { name: "可执行文件", extensions: ["exe"] },
+    ]);
 
     if (typeof selected === "string") {
       setManualLaunchPath(selected);
@@ -126,14 +126,9 @@ export function SingleImportDialog({
   }
 
   async function handlePickCover() {
-    const selected = await openDialog({
-      title: "选择封面图片",
-      multiple: false,
-      directory: false,
-      filters: [
-        { name: "图片", extensions: ["png", "jpg", "jpeg", "webp", "gif"] },
-      ],
-    });
+    const selected = await pickFileAtDefault("选择封面图片", [
+      { name: "图片", extensions: ["png", "jpg", "jpeg", "webp", "gif"] },
+    ]);
 
     if (typeof selected === "string") {
       setCoverSourcePath(selected);

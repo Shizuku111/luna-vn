@@ -11,7 +11,7 @@
   padding: 16px var(--content-inset-right) 16px var(--content-inset-x);
   background: transparent;
   user-select: none;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .titlebar-leading {

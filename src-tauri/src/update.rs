@@ -73,16 +73,16 @@ fn is_newer_version(latest: &str, current: &str) -> bool {
 }
 
 fn pick_windows_installer(assets: &[GithubAsset]) -> Option<&GithubAsset> {
-    let setup = assets.iter().find(|asset| {
+    let msi = assets.iter().find(|asset| {
         let name = asset.name.to_ascii_lowercase();
-        name.ends_with("-setup.exe") || name.ends_with("_x64-setup.exe")
+        name.ends_with(".msi") && !name.contains(".sig")
     });
-    if setup.is_some() {
-        return setup;
+    if msi.is_some() {
+        return msi;
     }
     assets.iter().find(|asset| {
         let name = asset.name.to_ascii_lowercase();
-        name.ends_with(".msi") && !name.contains(".sig")
+        name.ends_with("-setup.exe") || name.ends_with("_x64-setup.exe")
     })
 }
 
