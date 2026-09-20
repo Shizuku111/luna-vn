@@ -19,11 +19,11 @@ import {
   LIBRARY_GAME_STATUS_ICON,
   LIBRARY_GAME_STATUS_OPTIONS,
   LibraryGameStatus,
-  resolveGameCoverUrl,
   resolveGameListNames,
   type LibraryGame,
   type LibraryGameStatusValue,
 } from "@/features/library";
+import { useGameCoverUrl } from "@/hooks/useGameCoverUrl";
 import "./LibraryGameCard.css";
 
 type LibraryGameCardProps = {
@@ -79,7 +79,7 @@ export const LibraryGameCard = memo(function LibraryGameCard({
 }: LibraryGameCardProps) {
   const cardRef = useRef<HTMLLIElement>(null);
   const openClickTimerRef = useRef<number | null>(null);
-  const coverUrl = resolveGameCoverUrl(game, "list");
+  const coverUrl = useGameCoverUrl(game, "list");
   const { title, subtitle } = resolveGameListNames(game, showOriginalName);
   const studio = getGameStudioName(asInfobox(game.infobox));
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
@@ -236,7 +236,7 @@ export const LibraryGameCard = memo(function LibraryGameCard({
         <div className="library-game-cover">
           {coverUrl ? (
             <img
-              key={game.coverPath ?? coverUrl ?? "cover"}
+              key={coverUrl ?? "cover"}
               src={coverUrl}
               alt=""
               loading="lazy"

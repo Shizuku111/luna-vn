@@ -1,23 +1,38 @@
-import { useCallback, useEffect, useRef } from "react";
-import { ensureLibraryGameCover, type LibraryGame } from "@/features/library";
+import { useEffect, useRef } from "react";
+import {
+  ensureLibraryGameCover,
+  peekGameCoverCache,
+  rememberGameCover,
+  type LibraryGame,
+} from "@/features/library";
 
 const DEFAULT_CONCURRENCY = 2;
 
+function needsCover(game: LibraryGame) {
+  if (game.coverPath?.trim() || game.coverThumbPath?.trim()) return false;
+  const cached = peekGameCoverCache(game.id);
+  return !cached?.coverPath && !cached?.coverThumbPath;
+}
+
 export function useHydrateGameCovers(
   games: LibraryGame[],
-  onHydrated: (game: LibraryGame) => void,
   options?: { concurrency?: number; resetKey?: number | string },
 ) {
-  const onHydratedRef = useRef(onHydrated);
-  onHydratedRef.current = onHydrated;
+  const gamesRef = useRef(games);
+  gamesRef.current = games;
   const inFlightRef = useRef(new Set<number>());
   const doneRef = useRef(new Set<number>());
+  const activeRef = useRef(0);
+  const generationRef = useRef(0);
+  const pumpRef = useRef<() => void>(() => {});
   const concurrency = options?.concurrency ?? DEFAULT_CONCURRENCY;
   const resetKey = options?.resetKey;
 
   useEffect(() => {
+    generationRef.current += 1;
     doneRef.current.clear();
     inFlightRef.current.clear();
+    activeRef.current = 0;
   }, [resetKey]);
 
   useEffect(() => {
@@ -25,62 +40,58 @@ export function useHydrateGameCovers(
     for (const id of [...doneRef.current]) {
       if (!alive.has(id)) doneRef.current.delete(id);
     }
-    for (const id of [...inFlightRef.current]) {
-      if (!alive.has(id)) inFlightRef.current.delete(id);
-    }
   }, [games]);
 
-  const ensureMissing = useCallback(
-    (targets: LibraryGame[]) => {
-      const missing = targets.filter(
-        (game) =>
-          !game.coverPath?.trim() &&
-          !game.coverThumbPath?.trim() &&
-          !inFlightRef.current.has(game.id) &&
-          !doneRef.current.has(game.id),
-      );
-      if (missing.length === 0) return;
+  useEffect(() => {
+    let cancelled = false;
+    const generation = generationRef.current;
 
-      let cancelled = false;
-      let cursor = 0;
-      let active = 0;
-
-      const pump = () => {
-        while (!cancelled && active < concurrency && cursor < missing.length) {
-          const game = missing[cursor++];
-          inFlightRef.current.add(game.id);
-          active += 1;
-          void ensureLibraryGameCover(game.id)
-            .then((updated) => {
-              doneRef.current.add(game.id);
-              if (cancelled) return;
-              if (
-                updated.coverPath !== game.coverPath ||
-                updated.coverThumbPath !== game.coverThumbPath
-              ) {
-                onHydratedRef.current(updated);
-              }
-            })
-            .catch(() => {
-              doneRef.current.add(game.id);
-            })
-            .finally(() => {
-              inFlightRef.current.delete(game.id);
-              active -= 1;
-              pump();
+    const pump = () => {
+      if (cancelled || generation !== generationRef.current) return;
+      const targets = gamesRef.current;
+      while (activeRef.current < concurrency) {
+        const next = targets.find(
+          (game) =>
+            needsCover(game) &&
+            !inFlightRef.current.has(game.id) &&
+            !doneRef.current.has(game.id),
+        );
+        if (!next) break;
+        inFlightRef.current.add(next.id);
+        activeRef.current += 1;
+        const started = next;
+        void ensureLibraryGameCover(started.id)
+          .then((updated) => {
+            if (cancelled || generation !== generationRef.current) return;
+            doneRef.current.add(started.id);
+            rememberGameCover(started.id, {
+              coverPath: updated.coverPath,
+              coverThumbPath: updated.coverThumbPath,
             });
-        }
-      };
+          })
+          .catch(() => {
+            if (cancelled || generation !== generationRef.current) return;
+            doneRef.current.add(started.id);
+          })
+          .finally(() => {
+            if (cancelled || generation !== generationRef.current) return;
+            inFlightRef.current.delete(started.id);
+            activeRef.current -= 1;
+            pump();
+          });
+      }
+    };
 
-      pump();
-      return () => {
-        cancelled = true;
-      };
-    },
-    [concurrency],
-  );
+    pumpRef.current = pump;
+    pump();
+
+    return () => {
+      cancelled = true;
+      pumpRef.current = () => {};
+    };
+  }, [concurrency, resetKey]);
 
   useEffect(() => {
-    return ensureMissing(games);
-  }, [games, ensureMissing]);
+    pumpRef.current();
+  }, [games]);
 }

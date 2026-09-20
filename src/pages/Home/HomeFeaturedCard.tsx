@@ -7,10 +7,10 @@ import {
 } from "@/features/bangumi";
 import {
   formatLastPlayedRelative,
-  resolveGameCoverUrl,
   resolveGameListNames,
   type LibraryGame,
 } from "@/features/library";
+import { useGameCoverUrl } from "@/hooks/useGameCoverUrl";
 import "./HomeFeaturedCard.css";
 
 export type HomeFeaturedSource = "open" | "import";
@@ -50,7 +50,7 @@ export function HomeFeaturedCard({
   onLaunch,
 }: HomeFeaturedCardProps) {
   const coverRef = useRef<HTMLDivElement>(null);
-  const coverUrl = resolveGameCoverUrl(game, "detail");
+  const coverUrl = useGameCoverUrl(game, "detail");
   const [coverRatio, setCoverRatio] = useState(FALLBACK_COVER_RATIO);
   const { title, subtitle } = resolveGameListNames(game, showOriginalName);
   const studio = getGameStudioName(asInfobox(game.infobox));

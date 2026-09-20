@@ -236,7 +236,7 @@ export function HomePage({
     return list;
   }, [featuredGame, secondaryGames]);
 
-  useHydrateGameCovers(hydrateTargets, upsertGame, {
+  useHydrateGameCovers(hydrateTargets, {
     resetKey: gamesRevision,
   });
 

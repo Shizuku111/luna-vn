@@ -7,6 +7,7 @@ export type LibraryGamesControllerValue = {
   revision: number;
   refresh: () => Promise<void>;
   upsertGame: (game: LibraryGame) => void;
+  upsertGames: (games: LibraryGame[]) => void;
   removeGame: (id: number) => void;
 };
 

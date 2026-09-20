@@ -13,6 +13,14 @@ export {
 } from "./guessGameNameFromPath";
 export { resolveGameCoverUrl } from "./resolveGameCoverUrl";
 export type { GameCoverVariant } from "./resolveGameCoverUrl";
+export {
+  clearGameCoverCache,
+  loadLocalGameCover,
+  mergeCachedGameCover,
+  peekGameCoverCache,
+  rememberGameCover,
+} from "./gameCoverCache";
+export type { CachedGameCover } from "./gameCoverCache";
 export { GAME_LOGS_CHANGED_EVENT } from "./gameLogsEvents";
 export { LibraryGamesProvider } from "./LibraryGamesProvider";
 export { useLibraryGames } from "./useLibraryGames";

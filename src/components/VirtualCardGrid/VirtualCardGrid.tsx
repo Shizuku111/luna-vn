@@ -153,12 +153,18 @@ export function VirtualCardGrid<T>({
     return next;
   }, [virtualItems, columns, items]);
 
+  const lastVisibleKeyRef = useRef("");
   const onVisibleItemsChangeRef = useRef(onVisibleItemsChange);
   onVisibleItemsChangeRef.current = onVisibleItemsChange;
 
   useEffect(() => {
+    const visibleKey = visibleItems
+      .map((item) => String(getItemKey(item)))
+      .join("\0");
+    if (visibleKey === lastVisibleKeyRef.current) return;
+    lastVisibleKeyRef.current = visibleKey;
     onVisibleItemsChangeRef.current?.(visibleItems);
-  }, [visibleItems]);
+  }, [visibleItems, getItemKey]);
 
   return (
     <div

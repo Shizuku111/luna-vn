@@ -112,7 +112,7 @@ export function LibraryPage({
     revision: gamesRevision,
   } = useLibraryGames();
 
-  useHydrateGameCovers(viewportGames, upsertGame, {
+  useHydrateGameCovers(viewportGames, {
     resetKey: gamesRevision,
   });
 
