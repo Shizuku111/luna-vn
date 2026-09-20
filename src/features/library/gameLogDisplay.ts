@@ -12,6 +12,8 @@ export const GAME_LOG_ACTION_LABEL: Record<string, string> = {
   status_finished: "已完成",
   status_on_hold: "搁置",
   status_dropped: "弃置",
+  archive: "已归档",
+  unarchive: "取消归档",
 };
 
 export function resolveGameLogActionTone(action: string) {
@@ -26,7 +28,9 @@ export function resolveGameLogActionTone(action: string) {
     action === "status_playing" ||
     action === "status_finished" ||
     action === "status_on_hold" ||
-    action === "status_dropped"
+    action === "status_dropped" ||
+    action === "archive" ||
+    action === "unarchive"
   ) {
     return action;
   }

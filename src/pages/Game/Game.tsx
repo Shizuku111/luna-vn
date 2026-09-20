@@ -6,7 +6,7 @@ import type { DetailOpenOrigin } from "@/components/DetailOverlay";
 import { DetailInfobox } from "@/components/DetailInfobox";
 import { DetailSummary } from "@/components/DetailSummary";
 import { DetailToolbar } from "@/components/DetailToolbar";
-import { BookmarkIcon, HeartIcon, PlayIcon } from "@/components/icons";
+import { BookmarkIcon, HeartIcon, PlayIcon, TagIcon } from "@/components/icons";
 import { MessagePlugin } from "@/components/Message";
 import { ImageViewer } from "@/components/ImageViewer";
 import { Switch } from "@/components/Switch";
@@ -20,16 +20,20 @@ import {
   buildGameInfoboxRows,
 } from "@/features/bangumi";
 import {
+  archiveGame,
   deleteGame,
   launchGame,
   markGameFavorite,
   markGameWishlist,
   markGameStatus,
   openGameFolder,
+  unarchiveGame,
 } from "@/features/game";
 import { syncLibraryGameCharacters } from "@/features/character";
 import {
+  ArchiveGameDialog,
   ensureLibraryGameCover,
+  formatGameArchiveTooltip,
   formatGameLogFullTime,
   formatGameLogGroupLabel,
   getLibraryGame,
@@ -569,6 +573,50 @@ export function GamePage({
     })();
   }
 
+  function handleArchiveToggle() {
+    if (actionLockRef.current || deleting) return;
+    void (async () => {
+      if (current.archived) {
+        const ok = await DialogConfirm({
+          title: "取消归档",
+          content: `确定取消「${title}」的归档吗？`,
+          confirmText: "取消归档",
+        });
+        if (!ok) return;
+
+        actionLockRef.current = true;
+        try {
+          const updated = await unarchiveGame(current);
+          applyGameUpdate(updated);
+          onUpdated?.(updated);
+          MessagePlugin.success("已取消归档");
+        } catch (err) {
+          MessagePlugin.error(toErrorMessage(err, "取消归档失败"));
+        } finally {
+          actionLockRef.current = false;
+        }
+        return;
+      }
+
+      const tag = await ArchiveGameDialog({
+        title: `归档「${title}」`,
+      });
+      if (tag == null) return;
+
+      actionLockRef.current = true;
+      try {
+        const updated = await archiveGame(current, tag);
+        applyGameUpdate(updated);
+        onUpdated?.(updated);
+        MessagePlugin.success("已归档");
+      } catch (err) {
+        MessagePlugin.error(toErrorMessage(err, "归档失败"));
+      } finally {
+        actionLockRef.current = false;
+      }
+    })();
+  }
+
   function handleOpenBangumi() {
     void (async () => {
       try {
@@ -660,6 +708,11 @@ export function GamePage({
               key: "edit",
               label: "编辑游戏",
               onSelect: handleOpenEdit,
+            },
+            {
+              key: "archive",
+              label: current.archived ? "取消归档" : "归档",
+              onSelect: handleArchiveToggle,
             },
             {
               key: "delete",
@@ -827,6 +880,20 @@ export function GamePage({
                       </span>
                     </div>
                   </Tooltip>
+                  {current.archived ? (
+                    <Tooltip
+                      content={formatGameArchiveTooltip(current.archived)}
+                      placement="top"
+                    >
+                      <Tag
+                        className="game-page-archived-tag"
+                        theme="default"
+                        size="medium"
+                        prefix={<TagIcon aria-hidden />}
+                        content="已归档"
+                      />
+                    </Tooltip>
+                  ) : null}
                 </div>
                 <div className="game-page-action-trailing">
                   <div className="game-page-mark-btns">

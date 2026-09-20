@@ -39,6 +39,10 @@
     transform 0.12s ease;
 }
 
+.ui-tooltip:has(br) {
+  white-space: normal;
+}
+
 .ui-tooltip.is-ready {
   opacity: 1;
   transform: translateY(0);

@@ -4,6 +4,7 @@ import { listen } from "@tauri-apps/api/event";
 import { Button } from "@/components/Button";
 import type { DetailOpenOrigin } from "@/components/DetailOverlay";
 import {
+  ArchiveIcon,
   BookmarkIcon,
   CalendarIcon,
   HeartBrokenIcon,
@@ -59,6 +60,8 @@ const ACTION_ICON: Record<string, ReactNode> = {
     <BookmarkIcon aria-hidden className="library-wishlist-icon is-wishlist" />
   ),
   unwishlist: <BookmarkIcon aria-hidden />,
+  archive: <ArchiveIcon aria-hidden />,
+  unarchive: <ArchiveIcon aria-hidden />,
   ...GAME_LOG_STATUS_ACTION_ICON,
 };
 
@@ -157,6 +160,7 @@ export function HomePage({
     loading: gamesLoading,
     upsertGame,
     removeGame,
+    revision: gamesRevision,
   } = useLibraryGames();
   const [logs, setLogs] = useState<GameLogItem[]>([]);
   const [logsLoading, setLogsLoading] = useState(true);
@@ -232,7 +236,9 @@ export function HomePage({
     return list;
   }, [featuredGame, secondaryGames]);
 
-  useHydrateGameCovers(hydrateTargets, upsertGame);
+  useHydrateGameCovers(hydrateTargets, upsertGame, {
+    resetKey: gamesRevision,
+  });
 
   const {
     handleLaunchGame,
@@ -240,6 +246,7 @@ export function HomePage({
     handleStatusChange,
     handleFavoriteChange,
     handleWishlistChange,
+    handleArchiveChange,
     handleDeleteGame,
   } = useGameActions({
     showOriginalName,
@@ -317,6 +324,7 @@ export function HomePage({
                         onStatusChange={handleStatusChange}
                         onFavoriteChange={handleFavoriteChange}
                         onWishlistChange={handleWishlistChange}
+                        onArchiveChange={handleArchiveChange}
                       />
                     ))}
                   </ul>

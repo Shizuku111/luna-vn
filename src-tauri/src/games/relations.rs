@@ -5,7 +5,7 @@ use tauri::State;
 use crate::db::{chrono_like_now, LibraryDb};
 
 use super::cover::attach_cover_path;
-use super::{map_game_row_at, LibraryGame};
+use super::{attach_archive, map_game_row_at, LibraryGame};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -125,7 +125,14 @@ pub fn list_library_game_relations(
 
         let mut items = Vec::new();
         for row in mapped {
-            items.push(row.map_err(|err| err.to_string())?);
+            let (related_game_id, relation, sort_order, game) =
+                row.map_err(|err| err.to_string())?;
+            items.push((
+                related_game_id,
+                relation,
+                sort_order,
+                attach_archive(&conn, game)?,
+            ));
         }
         items
     };

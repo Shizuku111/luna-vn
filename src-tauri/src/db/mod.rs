@@ -173,10 +173,19 @@ fn ensure_schema(conn: &Connection) -> Result<(), String> {
           FOREIGN KEY (related_game_id) REFERENCES games(id) ON DELETE CASCADE
         );
 
+        CREATE TABLE IF NOT EXISTS archived (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          game_id INTEGER NOT NULL UNIQUE,
+          tag TEXT NOT NULL DEFAULT '',
+          created_at TEXT NOT NULL,
+          FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
+        );
+
         CREATE INDEX IF NOT EXISTS idx_game_logs_game_id ON game_logs(game_id);
         CREATE INDEX IF NOT EXISTS idx_game_logs_action ON game_logs(action);
         CREATE INDEX IF NOT EXISTS idx_game_logs_created_at ON game_logs(created_at);
         CREATE INDEX IF NOT EXISTS idx_game_relations_related ON game_relations(related_game_id);
+        CREATE INDEX IF NOT EXISTS idx_archived_game_id ON archived(game_id);
         "#,
     )
     .map_err(|err| err.to_string())?;

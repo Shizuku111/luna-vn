@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { listen } from "@tauri-apps/api/event";
 import { Tooltip } from "@/components/Tooltip";
 import {
+  ArchiveIcon,
   BookmarkIcon,
   HeartBrokenIcon,
   HeartIcon,
@@ -38,6 +39,8 @@ const ACTION_ICON: Record<string, ReactNode> = {
     <BookmarkIcon aria-hidden className="library-wishlist-icon is-wishlist" />
   ),
   unwishlist: <BookmarkIcon aria-hidden />,
+  archive: <ArchiveIcon aria-hidden />,
+  unarchive: <ArchiveIcon aria-hidden />,
   ...GAME_LOG_STATUS_ACTION_ICON,
 };
 

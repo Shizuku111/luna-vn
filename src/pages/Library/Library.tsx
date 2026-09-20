@@ -14,6 +14,7 @@ import { useHydrateGameCovers } from "@/hooks/useHydrateGameCovers";
 import { LibraryGameCard } from "./components/LibraryGameCard";
 import {
   LibraryViewPanel,
+  type ArchiveFilterValue,
   type SortValue,
   type StatusFilterValue,
 } from "./components/LibraryViewPanel";
@@ -92,6 +93,7 @@ export function LibraryPage({
   onNavigateToSettings?: () => void;
 }) {
   const [statusFilter, setStatusFilter] = useState<StatusFilterValue>("all");
+  const [archiveFilter, setArchiveFilter] = useState<ArchiveFilterValue>("all");
   const [sortBy, setSortBy] = useState<SortValue>("added");
   const [ascending, setAscending] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
@@ -107,9 +109,12 @@ export function LibraryPage({
     refresh: refreshGames,
     upsertGame,
     removeGame,
+    revision: gamesRevision,
   } = useLibraryGames();
 
-  useHydrateGameCovers(viewportGames, upsertGame);
+  useHydrateGameCovers(viewportGames, upsertGame, {
+    resetKey: gamesRevision,
+  });
 
   const visibleGames = useMemo(() => {
     const filtered =
@@ -118,6 +123,11 @@ export function LibraryPage({
         : games.filter((game) => game.status === Number(statusFilter));
 
     return [...filtered]
+      .filter((game) => {
+        if (archiveFilter === "archived") return Boolean(game.archived);
+        if (archiveFilter === "unarchived") return !game.archived;
+        return true;
+      })
       .filter((game) => !favoritesOnly || game.favorite)
       .sort((a, b) => {
         if (wishlistFirst) {
@@ -129,6 +139,7 @@ export function LibraryPage({
   }, [
     games,
     statusFilter,
+    archiveFilter,
     sortBy,
     ascending,
     showOriginalName,
@@ -152,7 +163,10 @@ export function LibraryPage({
   }
 
   const viewIsFiltered =
-    statusFilter !== "all" || wishlistFirst || favoritesOnly;
+    statusFilter !== "all" ||
+    archiveFilter !== "all" ||
+    wishlistFirst ||
+    favoritesOnly;
 
   const handleOpenGame = useCallback(
     (target: LibraryGame, origin?: DOMRect) => {
@@ -181,6 +195,7 @@ export function LibraryPage({
     handleStatusChange,
     handleFavoriteChange,
     handleWishlistChange,
+    handleArchiveChange,
     handleDeleteGame,
   } = useGameActions({
     showOriginalName,
@@ -213,7 +228,11 @@ export function LibraryPage({
 
   const emptyMessage = favoritesOnly
     ? "暂无喜欢的游戏"
-    : "你的视觉小说将出现在这里。";
+    : archiveFilter === "archived"
+      ? "暂无已归档的游戏"
+      : archiveFilter === "unarchived"
+        ? "暂无未归档的游戏"
+        : "你的视觉小说将出现在这里。";
 
   return (
     <section className="list-page">
@@ -235,12 +254,14 @@ export function LibraryPage({
         <div className="list-toolbar-right">
           <LibraryViewPanel
             statusFilter={statusFilter}
+            archiveFilter={archiveFilter}
             sortBy={sortBy}
             ascending={ascending}
             favoritesOnly={favoritesOnly}
             wishlistFirst={wishlistFirst}
             active={viewIsFiltered}
             onStatusChange={setStatusFilter}
+            onArchiveChange={setArchiveFilter}
             onSortChange={setSortBy}
             onAscendingChange={setAscending}
             onFavoritesOnlyChange={setFavoritesOnly}
@@ -286,7 +307,7 @@ export function LibraryPage({
             estimateRowHeight={(columnWidth) =>
               Math.ceil(columnWidth * 1.5 + 72)
             }
-            resetScrollKey={`${statusFilter}\0${sortBy}\0${ascending}\0${showOriginalName}\0${favoritesOnly}\0${wishlistFirst}`}
+            resetScrollKey={`${statusFilter}\0${archiveFilter}\0${sortBy}\0${ascending}\0${showOriginalName}\0${favoritesOnly}\0${wishlistFirst}`}
             onVisibleItemsChange={setViewportGames}
             renderItem={(game) => (
               <LibraryGameCard
@@ -299,6 +320,7 @@ export function LibraryPage({
                 onStatusChange={handleStatusChange}
                 onFavoriteChange={handleFavoriteChange}
                 onWishlistChange={handleWishlistChange}
+                onArchiveChange={handleArchiveChange}
                 onDelete={handleDeleteGame}
               />
             )}

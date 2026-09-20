@@ -332,6 +332,14 @@
   font-weight: 500;
 }
 
+.game-page-archived-tag {
+  flex-shrink: 0;
+  align-self: center;
+  border-color: color-mix(in srgb, var(--tone-archive-fg, #2563eb) 35%, transparent);
+  background: var(--tone-archive-bg, rgba(37, 99, 235, 0.14));
+  color: var(--tone-archive-fg, #2563eb);
+}
+
 .game-page-launch-btn.ui-btn--size-large {
   flex: 0 0 auto;
   min-width: 210px;

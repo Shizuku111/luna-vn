@@ -120,6 +120,16 @@
   background: color-mix(in srgb, var(--danger) 18%, transparent);
 }
 
+.game-logs-action-icon.is-archive {
+  color: var(--tone-archive-fg, #2563eb);
+  background: var(--tone-archive-bg, rgba(37, 99, 235, 0.14));
+}
+
+.game-logs-action-icon.is-unarchive {
+  color: var(--tone-unarchive-fg, #7eb6f6);
+  background: var(--tone-unarchive-bg, rgba(126, 182, 246, 0.2));
+}
+
 .game-logs-action-icon.is-other {
   color: #6b7280;
   background: rgba(127, 127, 127, 0.12);
@@ -167,6 +177,14 @@
 
 .game-logs-action.is-status_dropped {
   color: var(--danger);
+}
+
+.game-logs-action.is-archive {
+  color: var(--tone-archive-fg, #2563eb);
+}
+
+.game-logs-action.is-unarchive {
+  color: var(--tone-unarchive-fg, #7eb6f6);
 }
 
 html[data-theme="dark"] {

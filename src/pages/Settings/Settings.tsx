@@ -26,9 +26,11 @@ import "./Settings.css";
 
 export function SettingsPage({
   onLibraryDataCleared,
+  onImageCacheCleared,
   onNsfwVisibilityChanged,
 }: {
   onLibraryDataCleared?: () => void;
+  onImageCacheCleared?: () => void;
   onNsfwVisibilityChanged?: () => void;
 } = {}) {
   const {
@@ -117,7 +119,7 @@ export function SettingsPage({
       const ok = await DialogConfirm({
         title: "清除所有数据",
         content:
-          "确定清除本地游戏库中的全部游戏、角色、人物、关联数据及角色/人物图片缓存吗？此操作不可恢复。Bangumi 账号、Token 与应用设置不会被清除。",
+          "确定清除本地游戏库中的全部游戏、角色、人物、关联数据及游戏封面、角色/人物图片缓存吗？此操作不可恢复。Bangumi 账号、Token 与应用设置不会被清除。",
         confirmText: "清除",
         confirmTheme: "danger",
       });
@@ -142,7 +144,7 @@ export function SettingsPage({
       const ok = await DialogConfirm({
         title: "清除缓存数据",
         content:
-          "确定清除已下载的角色与人物图片缓存吗？游戏库数据不会受影响，之后查看相关图片时会重新下载。",
+          "确定清除已下载的游戏封面、角色与人物图片缓存吗？游戏库数据不会受影响，之后查看相关图片时会重新下载。",
         confirmText: "清除缓存",
       });
       if (!ok) return;
@@ -150,6 +152,7 @@ export function SettingsPage({
       setClearingCache(true);
       try {
         await clearImageCache();
+        onImageCacheCleared?.();
         MessagePlugin.success("已清除图片缓存");
       } catch (err) {
         MessagePlugin.error(toErrorMessage(err, "清除缓存失败"));
@@ -411,7 +414,7 @@ export function SettingsPage({
             <div className="settings-row-text">
               <span className="settings-row-label">清除所有数据</span>
               <span className="settings-row-hint">
-                删除本地游戏库中的游戏、角色、人物、关联记录及角色/人物图片缓存；不会清除
+                删除本地游戏库中的游戏、角色、人物、关联记录及游戏封面、角色/人物图片缓存；不会清除
                 Bangumi 账号、Token 与应用设置
               </span>
             </div>
@@ -428,7 +431,7 @@ export function SettingsPage({
             <div className="settings-row-text">
               <span className="settings-row-label">清除缓存数据</span>
               <span className="settings-row-hint">
-                仅删除已缓存的角色与人物图片，不影响游戏库与设置；离线时相关图片可能暂时无法显示，联网后会重新下载
+                删除已缓存的游戏封面、角色与人物图片，不影响游戏库与设置；离线时相关图片可能暂时无法显示，联网后会重新下载
               </span>
             </div>
             <div className="settings-row-control">

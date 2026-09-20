@@ -80,6 +80,12 @@ export type SavedLibraryGame = {
   bangumiId: number;
 };
 
+export type LibraryGameArchive = {
+  id: number;
+  tag: string;
+  createdAt: string;
+};
+
 export type LibraryGame = {
   id: number;
   bangumiId: number;
@@ -100,6 +106,7 @@ export type LibraryGame = {
   regionLaunch: boolean;
   favorite: boolean;
   wishlist: boolean;
+  archived?: LibraryGameArchive | null;
   lastLaunchedAt?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -119,6 +126,8 @@ export type GameLogAction =
   | "status_finished"
   | "status_on_hold"
   | "status_dropped"
+  | "archive"
+  | "unarchive"
   | string;
 
 export type GameLogItem = {

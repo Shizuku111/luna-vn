@@ -230,6 +230,24 @@ export async function updateLibraryGameWishlist(
   });
 }
 
+export async function archiveLibraryGame(
+  id: number,
+  tag?: string | null,
+): Promise<LibraryGame> {
+  return invoke<LibraryGame>("archive_library_game", {
+    id,
+    tag: tag?.trim() || null,
+  });
+}
+
+export async function unarchiveLibraryGame(id: number): Promise<LibraryGame> {
+  return invoke<LibraryGame>("unarchive_library_game", { id });
+}
+
+export async function listRecentArchiveTags(limit = 5): Promise<string[]> {
+  return invoke<string[]>("list_recent_archive_tags", { limit });
+}
+
 export async function deleteLibraryGame(id: number): Promise<void> {
   await invoke("delete_library_game", { id });
 }

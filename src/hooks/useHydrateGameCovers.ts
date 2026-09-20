@@ -6,13 +6,19 @@ const DEFAULT_CONCURRENCY = 2;
 export function useHydrateGameCovers(
   games: LibraryGame[],
   onHydrated: (game: LibraryGame) => void,
-  options?: { concurrency?: number },
+  options?: { concurrency?: number; resetKey?: number | string },
 ) {
   const onHydratedRef = useRef(onHydrated);
   onHydratedRef.current = onHydrated;
   const inFlightRef = useRef(new Set<number>());
   const doneRef = useRef(new Set<number>());
   const concurrency = options?.concurrency ?? DEFAULT_CONCURRENCY;
+  const resetKey = options?.resetKey;
+
+  useEffect(() => {
+    doneRef.current.clear();
+    inFlightRef.current.clear();
+  }, [resetKey]);
 
   useEffect(() => {
     const alive = new Set(games.map((game) => game.id));

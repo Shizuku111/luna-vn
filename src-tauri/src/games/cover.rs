@@ -17,6 +17,10 @@ pub(crate) fn ensure_luna_vn_notice(meta_dir: &std::path::Path) {
     let _ = std::fs::write(notice_path, "此目录由 Luna VN 生成，请不要删除。\n");
 }
 
+fn games_cover_dir() -> Option<std::path::PathBuf> {
+    crate::image_cache::games_dir()
+}
+
 fn cover_name_suffix() -> String {
     use std::time::{SystemTime, UNIX_EPOCH};
     const CHARS: &[u8] =
@@ -55,14 +59,13 @@ pub(crate) fn is_cover_filename(bangumi_id: i64, file_name: &str) -> bool {
         })
 }
 
-pub(crate) fn find_local_cover(launch_path: &str, bangumi_id: i64) -> Option<std::path::PathBuf> {
-    let dir = luna_vn_dir(launch_path)?;
+fn find_cover_in_dir(dir: &std::path::Path, bangumi_id: i64) -> Option<std::path::PathBuf> {
     if !dir.is_dir() {
         return None;
     }
 
     let mut matched: Vec<std::path::PathBuf> = Vec::new();
-    if let Ok(entries) = std::fs::read_dir(&dir) {
+    if let Ok(entries) = std::fs::read_dir(dir) {
         for entry in entries.flatten() {
             let path = entry.path();
             if !path.is_file() {
@@ -85,16 +88,57 @@ pub(crate) fn find_local_cover(launch_path: &str, bangumi_id: i64) -> Option<std
     matched.into_iter().next()
 }
 
-pub(crate) fn new_local_cover_stem(
-    launch_path: &str,
-    bangumi_id: i64,
-) -> Option<(std::path::PathBuf, String)> {
-    luna_vn_dir(launch_path).map(|dir| {
-        (
-            dir,
-            format!("{}_{}", bangumi_id, cover_name_suffix()),
-        )
-    })
+fn copy_cover_into_cache(source: &std::path::Path) -> Option<std::path::PathBuf> {
+    let dir = games_cover_dir()?;
+    let name = source.file_name()?.to_str()?;
+    let _ = std::fs::create_dir_all(&dir);
+    let dest = dir.join(name);
+    if source == dest {
+        return Some(dest);
+    }
+    if !dest.is_file() {
+        let copied = std::fs::copy(source, &dest).is_ok();
+        if !copied {
+            return None;
+        }
+    }
+    let old_thumb = crate::image_util::sidecar_thumbnail_path(source);
+    if old_thumb.is_file() {
+        let new_thumb = crate::image_util::sidecar_thumbnail_path(&dest);
+        if !new_thumb.is_file() {
+            let _ = std::fs::copy(&old_thumb, &new_thumb);
+        }
+    }
+    Some(dest)
+}
+
+fn migrate_legacy_cover(launch_path: &str, bangumi_id: i64) {
+    let Some(cache_dir) = games_cover_dir() else {
+        return;
+    };
+    if find_cover_in_dir(&cache_dir, bangumi_id).is_some() {
+        return;
+    }
+    let Some(legacy_dir) = luna_vn_dir(launch_path) else {
+        return;
+    };
+    let Some(old_path) = find_cover_in_dir(&legacy_dir, bangumi_id) else {
+        return;
+    };
+    let _ = copy_cover_into_cache(&old_path);
+}
+
+pub(crate) fn find_local_cover(bangumi_id: i64) -> Option<std::path::PathBuf> {
+    find_cover_in_dir(&games_cover_dir()?, bangumi_id)
+}
+
+pub(crate) fn find_game_cover(launch_path: &str, bangumi_id: i64) -> Option<std::path::PathBuf> {
+    migrate_legacy_cover(launch_path, bangumi_id);
+    find_local_cover(bangumi_id)
+}
+
+pub(crate) fn new_local_cover_stem(bangumi_id: i64) -> Option<(std::path::PathBuf, String)> {
+    games_cover_dir().map(|dir| (dir, format!("{}_{}", bangumi_id, cover_name_suffix())))
 }
 
 pub(crate) fn remove_cover_and_thumb(path: &std::path::Path) {
@@ -103,8 +147,8 @@ pub(crate) fn remove_cover_and_thumb(path: &std::path::Path) {
     let _ = std::fs::remove_file(thumb);
 }
 
-pub(crate) fn remove_local_covers(launch_path: &str, bangumi_id: i64) {
-    let Some(dir) = luna_vn_dir(launch_path) else {
+pub(crate) fn remove_local_covers(bangumi_id: i64) {
+    let Some(dir) = games_cover_dir() else {
         return;
     };
     if !dir.is_dir() {
@@ -154,7 +198,6 @@ pub(crate) fn download_cover_to_dir(
     std::fs::create_dir_all(dir).map_err(|err| {
         format!("无法创建封面目录（{}）：{}", dir.display(), err)
     })?;
-    ensure_luna_vn_notice(dir);
 
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(30))
@@ -191,7 +234,6 @@ pub(crate) fn install_cover_from_path(
     std::fs::create_dir_all(dir).map_err(|err| {
         format!("无法创建封面目录（{}）：{}", dir.display(), err)
     })?;
-    ensure_luna_vn_notice(dir);
 
     let bytes = std::fs::read(source_path).map_err(|err| {
         format!("读取封面失败（{}）：{}", source_path.display(), err)
@@ -202,10 +244,11 @@ pub(crate) fn install_cover_from_path(
 }
 
 fn ensure_local_cover(game: &LibraryGame) {
-    if find_local_cover(&game.launch_path, game.bangumi_id).is_some() {
+    migrate_legacy_cover(&game.launch_path, game.bangumi_id);
+    if find_local_cover(game.bangumi_id).is_some() {
         return;
     }
-    let Some((dir, stem)) = new_local_cover_stem(&game.launch_path, game.bangumi_id) else {
+    let Some((dir, stem)) = new_local_cover_stem(game.bangumi_id) else {
         return;
     };
     let Some(url) = remote_cover_url(game) else {
@@ -215,7 +258,8 @@ fn ensure_local_cover(game: &LibraryGame) {
 }
 
 pub(crate) fn attach_cover_path(mut game: LibraryGame) -> LibraryGame {
-    if let Some(path) = find_local_cover(&game.launch_path, game.bangumi_id) {
+    migrate_legacy_cover(&game.launch_path, game.bangumi_id);
+    if let Some(path) = find_local_cover(game.bangumi_id) {
         game.cover_path = Some(path.to_string_lossy().into_owned());
         if let Some(thumb) = crate::image_util::find_existing_sidecar_thumbnail(&path) {
             game.cover_thumb_path = Some(thumb.to_string_lossy().into_owned());
@@ -235,16 +279,14 @@ pub(crate) fn finalize_game_cover(game: LibraryGame) -> LibraryGame {
     attach_cover_path(game)
 }
 
-pub(crate) fn relocate_local_cover(
-    previous_launch_path: &str,
-    previous_bangumi_id: i64,
-    next_launch_path: &str,
-    next_bangumi_id: i64,
-) {
-    let Some(old_path) = find_local_cover(previous_launch_path, previous_bangumi_id) else {
+pub(crate) fn relocate_local_cover(previous_bangumi_id: i64, next_bangumi_id: i64) {
+    if previous_bangumi_id == next_bangumi_id {
+        return;
+    }
+    let Some(old_path) = find_local_cover(previous_bangumi_id) else {
         return;
     };
-    let Some((dir, stem)) = new_local_cover_stem(next_launch_path, next_bangumi_id) else {
+    let Some((dir, stem)) = new_local_cover_stem(next_bangumi_id) else {
         return;
     };
     let ext = old_path
@@ -256,14 +298,13 @@ pub(crate) fn relocate_local_cover(
         return;
     }
     let _ = std::fs::create_dir_all(&dir);
-    ensure_luna_vn_notice(&dir);
     let old_thumb = crate::image_util::sidecar_thumbnail_path(&old_path);
     let moved = std::fs::rename(&old_path, &new_path).is_ok()
         || (std::fs::copy(&old_path, &new_path).is_ok() && std::fs::remove_file(&old_path).is_ok());
     if moved {
         let _ = std::fs::remove_file(old_thumb);
         crate::image_util::schedule_sidecar_thumbnail(new_path.clone());
-        remove_local_covers(previous_launch_path, previous_bangumi_id);
+        remove_local_covers(previous_bangumi_id);
         if let Ok(entries) = std::fs::read_dir(&dir) {
             for entry in entries.flatten() {
                 let path = entry.path();

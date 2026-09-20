@@ -71,7 +71,15 @@ pub fn init_image_cache(app: &AppHandle) -> Result<ImageCacheRoot, String> {
         .map_err(|err| err.to_string())?;
     fs::create_dir_all(root.join(EntityImageKind::Person.dir_name()))
         .map_err(|err| err.to_string())?;
+    fs::create_dir_all(root.join("games")).map_err(|err| err.to_string())?;
+    let _ = IMAGE_CACHE_ROOT.set(root.clone());
     Ok(ImageCacheRoot(root))
+}
+
+static IMAGE_CACHE_ROOT: OnceLock<PathBuf> = OnceLock::new();
+
+pub fn games_dir() -> Option<PathBuf> {
+    IMAGE_CACHE_ROOT.get().map(|root| root.join("games"))
 }
 
 fn kind_dir(root: &Path, kind: EntityImageKind) -> PathBuf {
@@ -521,6 +529,7 @@ pub fn clear_all(root: &Path) -> Result<(), String> {
         .map_err(|err| err.to_string())?;
     fs::create_dir_all(root.join(EntityImageKind::Person.dir_name()))
         .map_err(|err| err.to_string())?;
+    fs::create_dir_all(root.join("games")).map_err(|err| err.to_string())?;
     Ok(())
 }
 

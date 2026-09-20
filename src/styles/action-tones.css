@@ -28,6 +28,12 @@
 
   --tone-status-dropped-fg: var(--danger);
   --tone-status-dropped-bg: color-mix(in srgb, var(--danger) 18%, transparent);
+
+  --tone-archive-fg: #2563eb;
+  --tone-archive-bg: rgba(37, 99, 235, 0.14);
+
+  --tone-unarchive-fg: #7eb6f6;
+  --tone-unarchive-bg: rgba(126, 182, 246, 0.2);
 }
 
 html[data-theme="dark"] {
@@ -60,6 +66,12 @@ html[data-theme="dark"] {
 
   --tone-status-dropped-fg: var(--danger);
   --tone-status-dropped-bg: color-mix(in srgb, var(--danger) 20%, transparent);
+
+  --tone-archive-fg: #60a5fa;
+  --tone-archive-bg: rgba(96, 165, 250, 0.2);
+
+  --tone-unarchive-fg: #93c5fd;
+  --tone-unarchive-bg: rgba(147, 197, 253, 0.18);
 }
 
 .home-activity-action-icon.is-import,
@@ -158,6 +170,24 @@ html[data-theme="dark"] {
 .home-activity-action-icon.is-status_dropped,
 .home-activity-action.is-status_dropped {
   color: var(--tone-status-dropped-fg);
+}
+
+.home-activity-action-icon.is-archive,
+.home-activity-main.is-archive::before {
+  background: var(--tone-archive-bg);
+}
+.home-activity-action-icon.is-archive,
+.home-activity-action.is-archive {
+  color: var(--tone-archive-fg);
+}
+
+.home-activity-action-icon.is-unarchive,
+.home-activity-main.is-unarchive::before {
+  background: var(--tone-unarchive-bg);
+}
+.home-activity-action-icon.is-unarchive,
+.home-activity-action.is-unarchive {
+  color: var(--tone-unarchive-fg);
 }
 
 .library-game-card::before {

@@ -10,6 +10,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 5px;
   white-space: nowrap;
   transition:
     background-color 0.18s ease,
@@ -63,6 +64,18 @@
 .ui-tag--theme-warning:hover,
 .ui-tag--theme-warning:focus-visible {
   background: color-mix(in srgb, #e8a317 28%, transparent);
+}
+
+.ui-tag-prefix,
+.ui-tag-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ui-tag-prefix .ui-icon {
+  font-size: 12px;
 }
 
 .ui-tag--static {

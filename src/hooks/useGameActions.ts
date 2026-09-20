@@ -2,15 +2,19 @@ import { useCallback, useRef } from "react";
 import { DialogConfirm } from "@/components/Dialog";
 import { MessagePlugin } from "@/components/Message";
 import {
+  archiveGame,
   deleteGame,
   launchGame,
   markGameFavorite,
   markGameStatus,
   markGameWishlist,
   openGameFolder,
+  unarchiveGame,
 } from "@/features/game";
 import {
+  ArchiveGameDialog,
   displayGameName,
+  isGameArchived,
   type LibraryGame,
   type LibraryGameStatusValue,
 } from "@/features/library";
@@ -143,6 +147,49 @@ export function useGameActions({
     [onUpdated, runLocked, titleOf],
   );
 
+  const handleArchiveChange = useCallback(
+    (game: LibraryGame, archived: boolean) => {
+      void (async () => {
+        if (archived) {
+          if (isGameArchived(game)) return;
+          const tag = await ArchiveGameDialog({
+            title: `归档「${titleOf(game)}」`,
+          });
+          if (tag == null) return;
+
+          runLocked(async () => {
+            try {
+              const updated = await archiveGame(game, tag);
+              await onUpdated?.(updated);
+              MessagePlugin.success("已归档");
+            } catch (err) {
+              MessagePlugin.error(toErrorMessage(err, "归档失败"));
+            }
+          });
+          return;
+        }
+
+        const ok = await DialogConfirm({
+          title: "取消归档",
+          content: `确定取消「${titleOf(game)}」的归档吗？`,
+          confirmText: "取消归档",
+        });
+        if (!ok) return;
+
+        runLocked(async () => {
+          try {
+            const updated = await unarchiveGame(game);
+            await onUpdated?.(updated);
+            MessagePlugin.success("已取消归档");
+          } catch (err) {
+            MessagePlugin.error(toErrorMessage(err, "取消归档失败"));
+          }
+        });
+      })();
+    },
+    [onUpdated, runLocked, titleOf],
+  );
+
   const handleDeleteGame = useCallback(
     (game: LibraryGame) => {
       void (async () => {
@@ -174,6 +221,7 @@ export function useGameActions({
     handleStatusChange,
     handleFavoriteChange,
     handleWishlistChange,
+    handleArchiveChange,
     handleDeleteGame,
   };
 }

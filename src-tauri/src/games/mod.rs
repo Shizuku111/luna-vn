@@ -1,6 +1,6 @@
 use rusqlite::{params, Connection, Row};
 use serde::{Deserialize, Serialize};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicBool, Ordering};
 use tauri::{AppHandle, Emitter, State};
 
@@ -10,7 +10,7 @@ mod cover;
 mod meta;
 pub mod relations;
 use cover::{
-    attach_cover_path, finalize_game_cover, find_local_cover,
+    attach_cover_path, finalize_game_cover, find_game_cover,
     install_cover_from_path, new_local_cover_stem, relocate_local_cover, remove_local_covers,
     remove_luna_vn_dir,
 };
@@ -122,6 +122,15 @@ pub struct LibraryGame {
     pub updated_at: String,
     pub cover_path: Option<String>,
     pub cover_thumb_path: Option<String>,
+    pub archived: Option<LibraryGameArchive>,
+}
+
+#[derive(Debug, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct LibraryGameArchive {
+    pub id: i64,
+    pub tag: String,
+    pub created_at: String,
 }
 
 pub(crate) fn map_game_row_at(row: &Row<'_>, offset: usize) -> rusqlite::Result<LibraryGame> {
@@ -164,6 +173,7 @@ pub(crate) fn map_game_row_at(row: &Row<'_>, offset: usize) -> rusqlite::Result<
         updated_at: row.get(offset + 21)?,
         cover_path: None,
         cover_thumb_path: None,
+        archived: None,
     })
 }
 
@@ -201,12 +211,14 @@ fn fetch_game_by_bangumi_id(
 }
 
 fn fetch_game_row_by_id(conn: &Connection, id: i64) -> Result<LibraryGame, String> {
-    conn.query_row(
-        &format!("{GAME_SELECT_SQL} WHERE id = ?1"),
-        params![id],
-        map_game_row,
-    )
-    .map_err(|_| "游戏不存在".to_string())
+    let game = conn
+        .query_row(
+            &format!("{GAME_SELECT_SQL} WHERE id = ?1"),
+            params![id],
+            map_game_row,
+        )
+        .map_err(|_| "游戏不存在".to_string())?;
+    attach_archive(conn, game)
 }
 
 const GAME_LOG_ACTION_IMPORT: &str = "import";
@@ -220,7 +232,78 @@ const GAME_LOG_ACTION_STATUS_PLAYING: &str = "status_playing";
 const GAME_LOG_ACTION_STATUS_FINISHED: &str = "status_finished";
 const GAME_LOG_ACTION_STATUS_ON_HOLD: &str = "status_on_hold";
 const GAME_LOG_ACTION_STATUS_DROPPED: &str = "status_dropped";
+const GAME_LOG_ACTION_ARCHIVE: &str = "archive";
+const GAME_LOG_ACTION_UNARCHIVE: &str = "unarchive";
 const EVENT_GAME_LOGS_CHANGED: &str = "game-logs-changed";
+
+fn map_archive_row(row: &Row<'_>) -> rusqlite::Result<LibraryGameArchive> {
+    Ok(LibraryGameArchive {
+        id: row.get(0)?,
+        tag: row.get(1)?,
+        created_at: row.get(2)?,
+    })
+}
+
+fn fetch_archive_for_game(
+    conn: &Connection,
+    game_id: i64,
+) -> Result<Option<LibraryGameArchive>, String> {
+    let mut stmt = conn
+        .prepare("SELECT id, tag, created_at FROM archived WHERE game_id = ?1 LIMIT 1")
+        .map_err(|err| err.to_string())?;
+    let mut rows = stmt
+        .query(params![game_id])
+        .map_err(|err| err.to_string())?;
+    match rows.next().map_err(|err| err.to_string())? {
+        Some(row) => Ok(Some(map_archive_row(row).map_err(|err| err.to_string())?)),
+        None => Ok(None),
+    }
+}
+
+pub(crate) fn attach_archive(
+    conn: &Connection,
+    mut game: LibraryGame,
+) -> Result<LibraryGame, String> {
+    game.archived = fetch_archive_for_game(conn, game.id)?;
+    Ok(game)
+}
+
+fn attach_archives(
+    conn: &Connection,
+    mut games: Vec<LibraryGame>,
+) -> Result<Vec<LibraryGame>, String> {
+    if games.is_empty() {
+        return Ok(games);
+    }
+
+    let mut stmt = conn
+        .prepare("SELECT id, game_id, tag, created_at FROM archived")
+        .map_err(|err| err.to_string())?;
+    let mapped = stmt
+        .query_map([], |row| {
+            let game_id: i64 = row.get(1)?;
+            Ok((
+                game_id,
+                LibraryGameArchive {
+                    id: row.get(0)?,
+                    tag: row.get(2)?,
+                    created_at: row.get(3)?,
+                },
+            ))
+        })
+        .map_err(|err| err.to_string())?;
+
+    let mut archives = HashMap::new();
+    for row in mapped {
+        let (game_id, archive) = row.map_err(|err| err.to_string())?;
+        archives.insert(game_id, archive);
+    }
+
+    for game in &mut games {
+        game.archived = archives.remove(&game.id);
+    }
+    Ok(games)
+}
 
 fn game_status_log_action(status: i32) -> Option<&'static str> {
     match status {
@@ -342,7 +425,7 @@ pub fn save_library_game(
 
     let saved_game = finalize_game_cover(saved_game);
     if let Err(err) = write_launch_meta(&saved_game) {
-        cleanup_failed_new_import(&db, game_id, &launch_path);
+        cleanup_failed_new_import(&db, game_id, saved_game.bangumi_id, &launch_path);
         return Err(err);
     }
 
@@ -451,6 +534,7 @@ pub fn save_manual_library_game(
         None,
     )?;
     let game_id = saved_game.id;
+    let bangumi_id = saved_game.bangumi_id;
     let launch_path = saved_game.launch_path.clone();
     drop(conn);
     notify_game_logs_changed(&app);
@@ -462,10 +546,8 @@ pub fn save_manual_library_game(
             .map(|value| value.trim())
             .filter(|value| !value.is_empty())
         {
-            remove_local_covers(&saved_game.launch_path, saved_game.bangumi_id);
-            if let Some((dir, stem)) =
-                new_local_cover_stem(&saved_game.launch_path, saved_game.bangumi_id)
-            {
+            remove_local_covers(saved_game.bangumi_id);
+            if let Some((dir, stem)) = new_local_cover_stem(saved_game.bangumi_id) {
                 install_cover_from_path(source, &dir, &stem)?;
             }
         }
@@ -478,7 +560,7 @@ pub fn save_manual_library_game(
     let saved_game = match finish {
         Ok(game) => game,
         Err(err) => {
-            cleanup_failed_new_import(&db, game_id, &launch_path);
+            cleanup_failed_new_import(&db, game_id, bangumi_id, &launch_path);
             return Err(err);
         }
     };
@@ -610,7 +692,6 @@ pub fn update_library_game(
     }
 
     let previous_bangumi_id = previous.bangumi_id;
-    let previous_launch_path = previous.launch_path.clone();
     let mut saved_game = conn
         .query_row(
             &format!("{GAME_SELECT_SQL} WHERE id = ?1"),
@@ -618,6 +699,7 @@ pub fn update_library_game(
             map_game_row,
         )
         .map_err(|_| "游戏不存在".to_string())?;
+    saved_game = attach_archive(&conn, saved_game)?;
     drop(conn);
 
     if let Some(source) = game
@@ -626,33 +708,24 @@ pub fn update_library_game(
         .map(|value| value.trim())
         .filter(|value| !value.is_empty())
     {
-        remove_local_covers(&saved_game.launch_path, saved_game.bangumi_id);
-        if previous_bangumi_id != saved_game.bangumi_id
-            || previous_launch_path != saved_game.launch_path
-        {
-            remove_local_covers(&previous_launch_path, previous_bangumi_id);
+        remove_local_covers(saved_game.bangumi_id);
+        if previous_bangumi_id != saved_game.bangumi_id {
+            remove_local_covers(previous_bangumi_id);
         }
-        if let Some((dir, stem)) =
-            new_local_cover_stem(&saved_game.launch_path, saved_game.bangumi_id)
-        {
+        if let Some((dir, stem)) = new_local_cover_stem(saved_game.bangumi_id) {
             install_cover_from_path(source, &dir, &stem)?;
         }
     } else if game.update_cover.unwrap_or(false) {
-        remove_local_covers(&previous_launch_path, previous_bangumi_id);
-        remove_local_covers(&saved_game.launch_path, saved_game.bangumi_id);
-    } else if previous_bangumi_id != saved_game.bangumi_id
-        || previous_launch_path != saved_game.launch_path
-    {
+        remove_local_covers(previous_bangumi_id);
+        if previous_bangumi_id != saved_game.bangumi_id {
+            remove_local_covers(saved_game.bangumi_id);
+        }
+    } else if previous_bangumi_id != saved_game.bangumi_id {
         if replace_subject {
-            remove_local_covers(&previous_launch_path, previous_bangumi_id);
-            remove_local_covers(&saved_game.launch_path, saved_game.bangumi_id);
+            remove_local_covers(previous_bangumi_id);
+            remove_local_covers(saved_game.bangumi_id);
         } else {
-            relocate_local_cover(
-                &previous_launch_path,
-                previous_bangumi_id,
-                &saved_game.launch_path,
-                saved_game.bangumi_id,
-            );
+            relocate_local_cover(previous_bangumi_id, saved_game.bangumi_id);
         }
     }
 
@@ -677,7 +750,7 @@ fn list_library_game_rows(db: &LibraryDb) -> Result<Vec<LibraryGame>, String> {
     for row in rows {
         list.push(row.map_err(|err| err.to_string())?);
     }
-    Ok(list)
+    attach_archives(&conn, list)
 }
 
 #[tauri::command]
@@ -855,6 +928,115 @@ pub fn update_library_game_wishlist(
 }
 
 #[tauri::command]
+pub fn archive_library_game(
+    app: AppHandle,
+    db: State<'_, LibraryDb>,
+    id: i64,
+    tag: Option<String>,
+) -> Result<LibraryGame, String> {
+    let tag = tag.unwrap_or_default().trim().to_string();
+    let game = {
+        let conn = db.0.lock().map_err(|err| err.to_string())?;
+        let exists: bool = conn
+            .query_row(
+                "SELECT EXISTS(SELECT 1 FROM archived WHERE game_id = ?1)",
+                params![id],
+                |row| row.get(0),
+            )
+            .map_err(|err| err.to_string())?;
+        if exists {
+            return Err("游戏已归档".to_string());
+        }
+
+        let game = fetch_game_row_by_id(&conn, id)?;
+        let now = chrono_like_now();
+        conn.execute(
+            r#"
+            INSERT INTO archived (game_id, tag, created_at)
+            VALUES (?1, ?2, ?3)
+            "#,
+            params![id, tag, now],
+        )
+        .map_err(|err| err.to_string())?;
+        insert_game_log(
+            &conn,
+            game.id,
+            game.bangumi_id,
+            GAME_LOG_ACTION_ARCHIVE,
+            None,
+        )?;
+        notify_game_logs_changed(&app);
+        attach_archive(&conn, game)?
+    };
+    Ok(attach_cover_path(game))
+}
+
+#[tauri::command]
+pub fn unarchive_library_game(
+    app: AppHandle,
+    db: State<'_, LibraryDb>,
+    id: i64,
+) -> Result<LibraryGame, String> {
+    let game = {
+        let conn = db.0.lock().map_err(|err| err.to_string())?;
+        let game = fetch_game_row_by_id(&conn, id)?;
+        let deleted = conn
+            .execute("DELETE FROM archived WHERE game_id = ?1", params![id])
+            .map_err(|err| err.to_string())?;
+        if deleted == 0 {
+            return Err("游戏未归档".to_string());
+        }
+        insert_game_log(
+            &conn,
+            game.id,
+            game.bangumi_id,
+            GAME_LOG_ACTION_UNARCHIVE,
+            None,
+        )?;
+        notify_game_logs_changed(&app);
+        attach_archive(&conn, game)?
+    };
+    Ok(attach_cover_path(game))
+}
+
+#[tauri::command]
+pub fn list_recent_archive_tags(
+    db: State<'_, LibraryDb>,
+    limit: Option<i64>,
+) -> Result<Vec<String>, String> {
+    let limit = limit.unwrap_or(5).clamp(1, 20) as usize;
+    let conn = db.0.lock().map_err(|err| err.to_string())?;
+    let mut stmt = conn
+        .prepare(
+            r#"
+            SELECT tag
+            FROM archived
+            WHERE TRIM(tag) != ''
+            ORDER BY CAST(created_at AS INTEGER) DESC, id DESC
+            "#,
+        )
+        .map_err(|err| err.to_string())?;
+    let mapped = stmt
+        .query_map([], |row| row.get::<_, String>(0))
+        .map_err(|err| err.to_string())?;
+
+    let mut tags = Vec::new();
+    let mut seen = HashSet::new();
+    for row in mapped {
+        let tag = row.map_err(|err| err.to_string())?;
+        let tag = tag.trim();
+        if tag.is_empty() || !seen.insert(tag.to_string()) {
+            continue;
+        }
+        tags.push(tag.to_string());
+        if tags.len() >= limit {
+            break;
+        }
+    }
+    Ok(tags)
+}
+
+#[tauri::command]
 pub fn launch_library_game(
     app: AppHandle,
     db: State<'_, LibraryDb>,
@@ -980,11 +1162,11 @@ pub fn reveal_library_game(path: String) -> Result<(), String> {
 pub fn delete_library_game(db: State<'_, LibraryDb>, id: i64) -> Result<(), String> {
     let mut conn = db.0.lock().map_err(|err| err.to_string())?;
 
-    let launch_path: String = conn
+    let (launch_path, bangumi_id): (String, i64) = conn
         .query_row(
-            "SELECT launch_path FROM games WHERE id = ?1",
+            "SELECT launch_path, bangumi_id FROM games WHERE id = ?1",
             params![id],
-            |row| row.get(0),
+            |row| Ok((row.get(0)?, row.get(1)?)),
         )
         .map_err(|_| "游戏不存在".to_string())?;
 
@@ -1007,11 +1189,18 @@ pub fn delete_library_game(db: State<'_, LibraryDb>, id: i64) -> Result<(), Stri
 
     tx.commit().map_err(|err| err.to_string())?;
 
+    remove_local_covers(bangumi_id);
     remove_luna_vn_dir(&launch_path);
     Ok(())
 }
 
-fn cleanup_failed_new_import(db: &LibraryDb, game_id: i64, launch_path: &str) {
+fn cleanup_failed_new_import(
+    db: &LibraryDb,
+    game_id: i64,
+    bangumi_id: i64,
+    launch_path: &str,
+) {
+    remove_local_covers(bangumi_id);
     remove_luna_vn_dir(launch_path);
     let Ok(mut conn) = db.0.lock() else {
         return;
@@ -1232,7 +1421,7 @@ fn finish_game_log_item(row: GameLogRow) -> GameLogItem {
         nsfw,
     ) = row;
 
-    let cover = find_local_cover(&launch_path, bangumi_id);
+    let cover = find_game_cover(&launch_path, bangumi_id);
     let cover_path = cover
         .as_ref()
         .map(|path| path.to_string_lossy().into_owned());

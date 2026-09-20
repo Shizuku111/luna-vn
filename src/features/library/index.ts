@@ -2,6 +2,8 @@ export { displayGameName, resolveGameListNames } from "./displayGameName";
 export type { GameListNames } from "./displayGameName";
 export { EditGameDialog } from "./components/EditGameDialog";
 export type { EditGameDialogProps } from "./components/EditGameDialog";
+export { ArchiveGameDialog } from "./components/ArchiveGameDialog";
+export type { ArchiveGameDialogOptions } from "./components/ArchiveGameDialog";
 export {
   guessGameNameFromLaunchPath,
   fileNameFromPath,
@@ -14,6 +16,11 @@ export type { GameCoverVariant } from "./resolveGameCoverUrl";
 export { GAME_LOGS_CHANGED_EVENT } from "./gameLogsEvents";
 export { LibraryGamesProvider } from "./LibraryGamesProvider";
 export { useLibraryGames } from "./useLibraryGames";
+export {
+  formatGameArchiveTitle,
+  formatGameArchiveTooltip,
+  isGameArchived,
+} from "./archiveDisplay";
 export {
   GAME_LOG_ACTION_LABEL,
   formatGameLogGroupKey,
@@ -55,6 +62,9 @@ export {
   updateLibraryGame,
   updateLibraryGameFavorite,
   updateLibraryGameWishlist,
+  archiveLibraryGame,
+  unarchiveLibraryGame,
+  listRecentArchiveTags,
   updateLibraryGameRegionLaunch,
   updateLibraryGameStatus,
 } from "./libraryStore";
@@ -71,6 +81,7 @@ export type {
   GameLogAction,
   GameLogItem,
   LibraryGame,
+  LibraryGameArchive,
   LibraryGameImages,
   LibraryGameRelation,
   LibraryGameStatusValue,

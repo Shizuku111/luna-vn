@@ -1,5 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import {
+  ArchiveIcon,
   BookmarkIcon,
   DetailsIcon,
   EditIcon,
@@ -10,8 +11,11 @@ import {
   TrashIcon,
 } from "@/components/icons";
 import { ContextMenu } from "@/components/ContextMenu";
+import { Tooltip } from "@/components/Tooltip";
 import { asInfobox, getGameStudioName } from "@/features/bangumi";
 import {
+  formatGameArchiveTitle,
+  formatGameArchiveTooltip,
   LIBRARY_GAME_STATUS_ICON,
   LIBRARY_GAME_STATUS_OPTIONS,
   LibraryGameStatus,
@@ -33,6 +37,7 @@ type LibraryGameCardProps = {
   onStatusChange?: (game: LibraryGame, status: LibraryGameStatusValue) => void;
   onFavoriteChange?: (game: LibraryGame, favorite: boolean) => void;
   onWishlistChange?: (game: LibraryGame, wishlist: boolean) => void;
+  onArchiveChange?: (game: LibraryGame, archived: boolean) => void;
 };
 
 const OPEN_CLICK_DELAY_MS = 180;
@@ -70,6 +75,7 @@ export const LibraryGameCard = memo(function LibraryGameCard({
   onStatusChange,
   onFavoriteChange,
   onWishlistChange,
+  onArchiveChange,
 }: LibraryGameCardProps) {
   const cardRef = useRef<HTMLLIElement>(null);
   const openClickTimerRef = useRef<number | null>(null);
@@ -189,6 +195,12 @@ export const LibraryGameCard = memo(function LibraryGameCard({
         })),
       },
       {
+        key: "archive",
+        label: game.archived ? "取消归档" : "归档",
+        icon: <ArchiveIcon aria-hidden />,
+        onSelect: () => onArchiveChange?.(game, !game.archived),
+      },
+      {
         key: "delete",
         label: "删除游戏",
         icon: <TrashIcon aria-hidden />,
@@ -207,6 +219,7 @@ export const LibraryGameCard = memo(function LibraryGameCard({
     onStatusChange,
     onFavoriteChange,
     onWishlistChange,
+    onArchiveChange,
   ]);
 
   return (
@@ -254,19 +267,36 @@ export const LibraryGameCard = memo(function LibraryGameCard({
               ) : null}
             </div>
           ) : null}
-          {game.status !== LibraryGameStatus.NotStarted ? (
+          {game.status !== LibraryGameStatus.NotStarted || game.archived ? (
             <>
               <div className="library-game-cover-shade" aria-hidden />
-              <span
-                className={[
-                  "library-game-status-icon",
-                  STATUS_MENU_CLASS[game.status],
-                ].join(" ")}
-                aria-label={STATUS_CHIP_LABEL[game.status]}
-                title={STATUS_CHIP_LABEL[game.status]}
-              >
-                {LIBRARY_GAME_STATUS_ICON[game.status]}
-              </span>
+              <div className="library-game-cover-flags">
+                {game.status !== LibraryGameStatus.NotStarted ? (
+                  <span
+                    className={[
+                      "library-game-status-icon",
+                      STATUS_MENU_CLASS[game.status],
+                    ].join(" ")}
+                    aria-label={STATUS_CHIP_LABEL[game.status]}
+                    title={STATUS_CHIP_LABEL[game.status]}
+                  >
+                    {LIBRARY_GAME_STATUS_ICON[game.status]}
+                  </span>
+                ) : null}
+                {game.archived ? (
+                  <Tooltip
+                    content={formatGameArchiveTooltip(game.archived)}
+                    placement="top"
+                  >
+                    <span
+                      className="library-game-archived-icon"
+                      aria-label={formatGameArchiveTitle(game.archived)}
+                    >
+                      <ArchiveIcon aria-hidden />
+                    </span>
+                  </Tooltip>
+                ) : null}
+              </div>
             </>
           ) : null}
         </div>

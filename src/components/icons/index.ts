@@ -28,6 +28,7 @@ import CirclePauseSvg from "@/assets/svg/circle-pause.svg?react";
 import CircleSlashSvg from "@/assets/svg/circle-slash.svg?react";
 import CalendarSvg from "@/assets/svg/calendar.svg?react";
 import TagSvg from "@/assets/svg/tag.svg?react";
+import ArchiveSvg from "@/assets/svg/archive.svg?react";
 import TaskCheckedSvg from "@/assets/svg/task-checked.svg?react";
 import TrashSvg from "@/assets/svg/trash.svg?react";
 import WindowCloseSvg from "@/assets/svg/window-close.svg?react";
@@ -120,6 +121,10 @@ export const CalendarIcon = createIcon(
   "CalendarIcon",
 );
 export const TagIcon = createIcon(TagSvg as SvgComponent, "TagIcon");
+export const ArchiveIcon = createIcon(
+  ArchiveSvg as SvgComponent,
+  "ArchiveIcon",
+);
 export const TaskCheckedIcon = createIcon(
   TaskCheckedSvg as SvgComponent,
   "TaskCheckedIcon",

@@ -7,6 +7,8 @@ import {
   updateLibraryGame,
   updateLibraryGameFavorite,
   updateLibraryGameWishlist,
+  archiveLibraryGame,
+  unarchiveLibraryGame,
   updateLibraryGameStatus,
   type LibraryGame,
   type LibraryGameStatusValue,
@@ -128,4 +130,15 @@ export async function markGameWishlist(
   wishlist: boolean,
 ): Promise<LibraryGame> {
   return updateLibraryGameWishlist(game.id, wishlist);
+}
+
+export async function archiveGame(
+  game: LibraryGame,
+  tag?: string | null,
+): Promise<LibraryGame> {
+  return archiveLibraryGame(game.id, tag);
+}
+
+export async function unarchiveGame(game: LibraryGame): Promise<LibraryGame> {
+  return unarchiveLibraryGame(game.id);
 }

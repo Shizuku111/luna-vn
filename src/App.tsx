@@ -220,6 +220,7 @@ function AppContent() {
         return withPageSuspense(
           <SettingsPage
             onLibraryDataCleared={refreshAllLibraryIndexes}
+            onImageCacheCleared={refreshAllLibraryIndexes}
             onNsfwVisibilityChanged={refreshAllLibraryIndexes}
           />,
         );

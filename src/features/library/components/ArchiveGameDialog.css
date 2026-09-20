@@ -1,0 +1,123 @@
+.ui-dialog.archive-game-dialog {
+  width: min(420px, 100%);
+}
+
+.ui-dialog.archive-game-dialog .ui-dialog-body {
+  flex: 0 1 auto;
+  min-height: auto;
+}
+
+.archive-game-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.archive-game-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.archive-game-combobox {
+  min-width: 0;
+}
+
+.archive-game-suggest-panel {
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid rgba(127, 127, 127, 0.12);
+  background: #ffffff;
+  box-shadow:
+    0 10px 30px rgba(31, 36, 48, 0.12),
+    0 2px 8px rgba(31, 36, 48, 0.06);
+  animation: archive-game-suggest-in 0.16s ease;
+}
+
+.archive-game-suggest-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.archive-game-suggest-option {
+  width: 100%;
+  margin: 0;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: none;
+  background: transparent;
+  color: #b0b5bd;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.archive-game-suggest-option:hover {
+  background: rgba(91, 124, 153, 0.08);
+  color: #1f2430;
+}
+
+.archive-game-suggest-option.is-selected {
+  background: transparent;
+  color: #1f2430;
+}
+
+.archive-game-suggest-option.is-selected:hover {
+  background: rgba(91, 124, 153, 0.08);
+}
+
+@keyframes archive-game-suggest-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+html[data-theme="dark"] {
+  .archive-game-label {
+    color: #9aa0ab;
+  }
+
+  .archive-game-suggest-panel {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: #252830;
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.35),
+      0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .archive-game-suggest-option {
+    color: #6b7280;
+  }
+
+  .archive-game-suggest-option:hover,
+  .archive-game-suggest-option.is-selected:hover {
+    background: rgba(143, 176, 201, 0.1);
+    color: #f2efe8;
+  }
+
+  .archive-game-suggest-option.is-selected {
+    background: transparent;
+    color: #f2efe8;
+  }
+}

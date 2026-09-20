@@ -17,12 +17,13 @@ pub fn clear_library_data(
         DELETE FROM character_persons;
         DELETE FROM game_persons;
         DELETE FROM game_relations;
+        DELETE FROM archived;
         DELETE FROM game_logs;
         DELETE FROM games;
         DELETE FROM characters;
         DELETE FROM persons;
         DELETE FROM sqlite_sequence
-          WHERE name IN ('games', 'characters', 'persons', 'game_logs');
+          WHERE name IN ('games', 'characters', 'persons', 'game_logs', 'archived');
         "#,
     )
     .map_err(|err| err.to_string())?;

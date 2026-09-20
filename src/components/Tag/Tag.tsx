@@ -7,6 +7,7 @@ export type TagSize = "small" | "medium";
 export type TagProps = {
   theme?: TagTheme;
   size?: TagSize;
+  prefix?: ReactNode;
   content?: ReactNode;
   interactive?: boolean;
 } & Omit<HTMLAttributes<HTMLDivElement>, "children" | "content">;
@@ -14,6 +15,7 @@ export type TagProps = {
 export function Tag({
   theme = "default",
   size = "medium",
+  prefix,
   content,
   className = "",
   interactive,
@@ -50,6 +52,7 @@ export function Tag({
       onKeyDown={handleKeyDown}
       {...rest}
     >
+      {prefix ? <span className="ui-tag-prefix">{prefix}</span> : null}
       {content != null ? <span className="ui-tag-content">{content}</span> : null}
     </div>
   );

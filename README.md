@@ -32,7 +32,7 @@ pnpm tauri build    # 打包
 
 ## 数据
 
-`%APPDATA%\LunaVN\`（数据库、设置与图片缓存）。游戏封面缓存在对应目录的 `.LunaVN\` 下。
+`%APPDATA%\LunaVN\`（数据库、设置与图片缓存）。游戏封面缓存在 `image-cache\games\`，角色与人物图片分别缓存在 `image-cache\characters\`、`image-cache\persons\`。
 
 ## 许可
 

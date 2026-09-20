@@ -11,6 +11,12 @@ const STATUS_FILTER_OPTIONS = [
   })),
 ] as const;
 
+const ARCHIVE_FILTER_OPTIONS = [
+  { value: "all", label: "全部" },
+  { value: "unarchived", label: "未归档" },
+  { value: "archived", label: "已归档" },
+] as const;
+
 const SORT_OPTIONS = [
   { value: "recent", label: "最近游玩" },
   { value: "added", label: "添加时间" },
@@ -19,16 +25,20 @@ const SORT_OPTIONS = [
 ] as const;
 
 export type StatusFilterValue = (typeof STATUS_FILTER_OPTIONS)[number]["value"];
+export type ArchiveFilterValue =
+  (typeof ARCHIVE_FILTER_OPTIONS)[number]["value"];
 export type SortValue = (typeof SORT_OPTIONS)[number]["value"];
 
 type LibraryViewPanelProps = {
   statusFilter: StatusFilterValue;
+  archiveFilter: ArchiveFilterValue;
   sortBy: SortValue;
   ascending: boolean;
   favoritesOnly: boolean;
   wishlistFirst: boolean;
   active?: boolean;
   onStatusChange: (value: StatusFilterValue) => void;
+  onArchiveChange: (value: ArchiveFilterValue) => void;
   onSortChange: (value: SortValue) => void;
   onAscendingChange: (value: boolean) => void;
   onFavoritesOnlyChange: (value: boolean) => void;
@@ -37,12 +47,14 @@ type LibraryViewPanelProps = {
 
 export function LibraryViewPanel({
   statusFilter,
+  archiveFilter,
   sortBy,
   ascending,
   favoritesOnly,
   wishlistFirst,
   active = false,
   onStatusChange,
+  onArchiveChange,
   onSortChange,
   onAscendingChange,
   onFavoritesOnlyChange,
@@ -129,6 +141,36 @@ export function LibraryViewPanel({
                       .filter(Boolean)
                       .join(" ")}
                     onClick={() => onStatusChange(option.value)}
+                  >
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="library-view-section">
+            <h2 className="library-view-section-title">归档</h2>
+            <div
+              className="library-view-chips"
+              role="radiogroup"
+              aria-label="归档"
+            >
+              {ARCHIVE_FILTER_OPTIONS.map((option) => {
+                const selected = archiveFilter === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    className={[
+                      "library-view-chip",
+                      selected ? "is-selected" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    onClick={() => onArchiveChange(option.value)}
                   >
                     {option.label}
                   </button>
