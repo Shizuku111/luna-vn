@@ -10,7 +10,7 @@ export type TagProps = {
   prefix?: ReactNode;
   content?: ReactNode;
   interactive?: boolean;
-} & Omit<HTMLAttributes<HTMLDivElement>, "children" | "content">;
+} & Omit<HTMLAttributes<HTMLDivElement>, "children" | "content" | "prefix">;
 
 export function Tag({
   theme = "default",
