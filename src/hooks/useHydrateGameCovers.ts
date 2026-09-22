@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import {
-  ensureLibraryGameCover,
+  ensureLibraryGameListCover,
   peekGameCoverCache,
   rememberGameCover,
   type LibraryGame,
@@ -9,9 +9,9 @@ import {
 const DEFAULT_CONCURRENCY = 2;
 
 function needsCover(game: LibraryGame) {
-  if (game.coverPath?.trim() || game.coverThumbPath?.trim()) return false;
+  if (game.coverThumbPath?.trim()) return false;
   const cached = peekGameCoverCache(game.id);
-  return !cached?.coverPath && !cached?.coverThumbPath;
+  return !cached?.coverThumbPath;
 }
 
 export function useHydrateGameCovers(
@@ -60,14 +60,15 @@ export function useHydrateGameCovers(
         inFlightRef.current.add(next.id);
         activeRef.current += 1;
         const started = next;
-        void ensureLibraryGameCover(started.id)
+        void ensureLibraryGameListCover(started.id)
           .then((updated) => {
             if (cancelled || generation !== generationRef.current) return;
             doneRef.current.add(started.id);
-            rememberGameCover(started.id, {
-              coverPath: updated.coverPath,
-              coverThumbPath: updated.coverThumbPath,
-            });
+            if (updated.coverThumbPath?.trim()) {
+              rememberGameCover(started.id, {
+                coverThumbPath: updated.coverThumbPath,
+              });
+            }
           })
           .catch(() => {
             if (cancelled || generation !== generationRef.current) return;

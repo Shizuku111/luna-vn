@@ -66,6 +66,7 @@ pub fn run() {
             games::list_library_games_basic,
             games::get_library_game,
             games::ensure_library_game_cover,
+            games::ensure_library_game_list_cover,
             games::update_library_game,
             games::update_library_game_status,
             games::update_library_game_region_launch,

@@ -7,19 +7,40 @@ export type CachedGameCover = {
 
 const cache = new Map<number, CachedGameCover>();
 const inflight = new Map<number, Promise<CachedGameCover | null>>();
+const listeners = new Set<() => void>();
 
 export function peekGameCoverCache(id: number): CachedGameCover | undefined {
   return cache.get(id);
 }
 
+export function subscribeGameCoverCache(listener: () => void) {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
 export function rememberGameCover(id: number, cover: CachedGameCover) {
-  const coverPath = cover.coverPath?.trim() || null;
-  const coverThumbPath = cover.coverThumbPath?.trim() || null;
+  const prev = cache.get(id);
+  const coverPath =
+    cover.coverPath === undefined
+      ? (prev?.coverPath ?? null)
+      : cover.coverPath?.trim() || null;
+  const coverThumbPath =
+    cover.coverThumbPath === undefined
+      ? (prev?.coverThumbPath ?? null)
+      : cover.coverThumbPath?.trim() || null;
   if (!coverPath && !coverThumbPath) {
+    if (!cache.has(id)) return;
     cache.delete(id);
+    for (const listener of listeners) listener();
+    return;
+  }
+  if (prev?.coverPath === coverPath && prev?.coverThumbPath === coverThumbPath) {
     return;
   }
   cache.set(id, { coverPath, coverThumbPath });
+  for (const listener of listeners) listener();
 }
 
 export function clearGameCoverCache() {

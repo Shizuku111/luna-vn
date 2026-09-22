@@ -81,73 +81,55 @@ type FeaturedPick = {
   at?: string;
 };
 
-function pickFeaturedGame(
-  logs: GameLogItem[],
-  games: LibraryGame[],
-): FeaturedPick | null {
-  if (!games.length) return null;
-  const byId = new Map(games.map((game) => [game.id, game]));
+function timeValue(value?: string | null): number {
+  const time = Number(value);
+  return Number.isFinite(time) ? time : 0;
+}
 
-  for (const log of logs) {
-    if (log.action !== "open") continue;
-    const game = byId.get(log.gameId);
-    if (game) return { game, source: "open", at: log.createdAt };
-  }
+function recentTime(game: LibraryGame): number {
+  return Math.max(timeValue(game.lastLaunchedAt), timeValue(game.createdAt));
+}
 
-  for (const log of logs) {
-    if (log.action !== "import") continue;
-    const game = byId.get(log.gameId);
-    if (game) return { game, source: "import", at: log.createdAt };
-  }
+function pickFeaturedGame(games: LibraryGame[]): FeaturedPick | null {
+  let played: LibraryGame | null = null;
+  let playedAt = 0;
+  let imported: LibraryGame | null = null;
+  let importedAt = 0;
 
-  let latest: LibraryGame | null = null;
   for (const game of games) {
-    if (!latest || Number(game.createdAt) > Number(latest.createdAt)) {
-      latest = game;
+    const launchedAt = timeValue(game.lastLaunchedAt);
+    if (launchedAt > playedAt) {
+      played = game;
+      playedAt = launchedAt;
+    }
+    const createdAt = timeValue(game.createdAt);
+    if (createdAt > importedAt) {
+      imported = game;
+      importedAt = createdAt;
     }
   }
-  return latest
-    ? { game: latest, source: "import", at: latest.createdAt }
-    : null;
+
+  if (played?.lastLaunchedAt) {
+    return { game: played, source: "open", at: played.lastLaunchedAt };
+  }
+  if (imported) {
+    return { game: imported, source: "import", at: imported.createdAt };
+  }
+  return null;
 }
 
-function pickRecentOpenOrImportGames(
-  logs: GameLogItem[],
+function pickRecentGames(
   games: LibraryGame[],
+  featuredId: number | null,
   limit: number,
 ): LibraryGame[] {
-  if (!games.length || limit <= 0) return [];
-  const byId = new Map(games.map((game) => [game.id, game]));
-  const result: LibraryGame[] = [];
-  const seen = new Set<number>();
-
-  for (const log of logs) {
-    if (log.action !== "open" && log.action !== "import") continue;
-    if (seen.has(log.gameId)) continue;
-    const game = byId.get(log.gameId);
-    if (!game) continue;
-    seen.add(log.gameId);
-    result.push(game);
-    if (result.length >= limit) break;
-  }
-
-  return result;
-}
-
-function pickSecondaryGames(
-  recent: LibraryGame[],
-  featured: LibraryGame | null,
-): LibraryGame[] {
-  if (!recent.length) return [];
-  const featuredId = featured?.id;
-  const hasFeatured =
-    featuredId != null && recent.some((game) => game.id === featuredId);
-
-  if (hasFeatured) {
-    return recent.filter((game) => game.id !== featuredId).slice(0, 6);
-  }
-
-  return recent.slice(0, 6);
+  if (limit <= 0) return [];
+  return games
+    .filter((game) => game.id !== featuredId)
+    .sort(
+      (a, b) => recentTime(b) - recentTime(a) || b.id - a.id,
+    )
+    .slice(0, limit);
 }
 
 export function HomePage({
@@ -166,7 +148,6 @@ export function HomePage({
   const [logsLoading, setLogsLoading] = useState(true);
   const [editingGame, setEditingGame] = useState<LibraryGame | null>(null);
   const logsSeq = useRefreshSeq();
-  const loading = gamesLoading || logsLoading;
 
   async function refreshLogs(showLoading: boolean) {
     const seq = logsSeq.begin();
@@ -214,12 +195,12 @@ export function HomePage({
     };
   }, []);
 
-  const featured = useMemo(() => pickFeaturedGame(logs, games), [logs, games]);
+  const featured = useMemo(() => pickFeaturedGame(games), [games]);
   const featuredGame = featured?.game ?? null;
-  const secondaryGames = useMemo(() => {
-    const recent = pickRecentOpenOrImportGames(logs, games, 7);
-    return pickSecondaryGames(recent, featuredGame);
-  }, [logs, games, featuredGame]);
+  const secondaryGames = useMemo(
+    () => pickRecentGames(games, featuredGame?.id ?? null, 6),
+    [games, featuredGame],
+  );
 
   const hydrateTargets = useMemo(() => {
     const ids = new Set<number>();
@@ -273,7 +254,7 @@ export function HomePage({
 
   return (
     <section className="home-page">
-      {!loading && games.length === 0 ? (
+      {!gamesLoading && games.length === 0 ? (
         <div className="home-empty">
           <p className="home-empty-text">暂无游戏</p>
           <Button
@@ -344,7 +325,7 @@ export function HomePage({
             </header>
 
             <div className="home-activity-body">
-              {loading ? (
+              {logsLoading ? (
                 <p className="home-activity-empty">加载中…</p>
               ) : logs.length === 0 ? (
                 <p className="home-activity-empty">暂无动态</p>

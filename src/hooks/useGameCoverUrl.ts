@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   loadLocalGameCover,
   mergeCachedGameCover,
+  subscribeGameCoverCache,
   type LibraryGame,
   resolveGameCoverUrl,
   type GameCoverVariant,
@@ -18,20 +19,32 @@ export function useGameCoverUrl(
   );
 
   useEffect(() => {
-    const current = gameRef.current;
-    const merged = mergeCachedGameCover(current);
-    setUrl(resolveGameCoverUrl(merged, variant));
+    const apply = () => {
+      const next = resolveGameCoverUrl(
+        mergeCachedGameCover(gameRef.current),
+        variant,
+      );
+      setUrl((prev) => (prev === next ? prev : next));
+    };
+    apply();
+    const unsubscribe = subscribeGameCoverCache(apply);
+    if (variant === "list") {
+      return unsubscribe;
+    }
+
+    const merged = mergeCachedGameCover(gameRef.current);
     if (merged.coverPath?.trim() || merged.coverThumbPath?.trim()) {
-      return;
+      return unsubscribe;
     }
 
     let cancelled = false;
-    void loadLocalGameCover(current.id).then((found) => {
+    void loadLocalGameCover(gameRef.current.id).then((found) => {
       if (cancelled || !found) return;
-      setUrl(resolveGameCoverUrl({ ...current, ...found }, variant));
+      apply();
     });
     return () => {
       cancelled = true;
+      unsubscribe();
     };
   }, [game.id, variant]);
 

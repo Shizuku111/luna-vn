@@ -19,6 +19,7 @@ export {
   mergeCachedGameCover,
   peekGameCoverCache,
   rememberGameCover,
+  subscribeGameCoverCache,
 } from "./gameCoverCache";
 export type { CachedGameCover } from "./gameCoverCache";
 export { GAME_LOGS_CHANGED_EVENT } from "./gameLogsEvents";
@@ -49,6 +50,7 @@ export {
 export {
   deleteLibraryGame,
   ensureLibraryGameCover,
+  ensureLibraryGameListCover,
   getLibraryGame,
   launchLibraryGame,
   listLibraryGames,

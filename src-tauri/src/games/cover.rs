@@ -21,71 +21,16 @@ fn games_cover_dir() -> Option<std::path::PathBuf> {
     crate::image_cache::games_dir()
 }
 
-fn cover_name_suffix() -> String {
-    use std::time::{SystemTime, UNIX_EPOCH};
-    const CHARS: &[u8] =
-        b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    let mut n = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .map(|d| d.as_millis())
-        .unwrap_or(0);
-    n = n
-        .wrapping_mul(0x9E37_79B9_7F4A_7C15)
-        .wrapping_add(n >> 11);
-    let mut out = [b'0'; 6];
-    for slot in out.iter_mut().rev() {
-        *slot = CHARS[(n % 62) as usize];
-        n /= 62;
-    }
-    String::from_utf8_lossy(&out).into_owned()
-}
-
-pub(crate) fn is_cover_filename(bangumi_id: i64, file_name: &str) -> bool {
-    let prefix = format!("{bangumi_id}_");
-    let Some(rest) = file_name.strip_prefix(&prefix) else {
-        return false;
-    };
-    let Some((suffix, ext)) = rest.rsplit_once('.') else {
-        return false;
-    };
-    if suffix.ends_with("_thumb") {
-        return false;
-    }
-    let ext = ext.to_ascii_lowercase();
-    matches!(ext.as_str(), "png" | "jpg" | "jpeg" | "webp" | "gif")
-        && suffix.len() == 6
-        && suffix.bytes().all(|b| {
-            b.is_ascii_digit() || (b'A'..=b'Z').contains(&b) || (b'a'..=b'z').contains(&b)
-        })
-}
+const COVER_EXTENSIONS: &[&str] = &["jpg", "jpeg", "png", "webp", "gif"];
 
 fn find_cover_in_dir(dir: &std::path::Path, bangumi_id: i64) -> Option<std::path::PathBuf> {
     if !dir.is_dir() {
         return None;
     }
-
-    let mut matched: Vec<std::path::PathBuf> = Vec::new();
-    if let Ok(entries) = std::fs::read_dir(dir) {
-        for entry in entries.flatten() {
-            let path = entry.path();
-            if !path.is_file() {
-                continue;
-            }
-            let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
-                continue;
-            };
-            if is_cover_filename(bangumi_id, name) {
-                matched.push(path);
-            }
-        }
-    }
-
-    matched.sort_by(|a, b| {
-        let am = a.metadata().and_then(|m| m.modified()).ok();
-        let bm = b.metadata().and_then(|m| m.modified()).ok();
-        bm.cmp(&am)
-    });
-    matched.into_iter().next()
+    COVER_EXTENSIONS.iter().find_map(|ext| {
+        let path = dir.join(format!("{bangumi_id}.{ext}"));
+        path.is_file().then_some(path)
+    })
 }
 
 fn copy_cover_into_cache(source: &std::path::Path) -> Option<std::path::PathBuf> {
@@ -138,7 +83,7 @@ pub(crate) fn find_game_cover(launch_path: &str, bangumi_id: i64) -> Option<std:
 }
 
 pub(crate) fn new_local_cover_stem(bangumi_id: i64) -> Option<(std::path::PathBuf, String)> {
-    games_cover_dir().map(|dir| (dir, format!("{}_{}", bangumi_id, cover_name_suffix())))
+    games_cover_dir().map(|dir| (dir, bangumi_id.to_string()))
 }
 
 pub(crate) fn remove_cover_and_thumb(path: &std::path::Path) {
@@ -151,20 +96,13 @@ pub(crate) fn remove_local_covers(bangumi_id: i64) {
     let Some(dir) = games_cover_dir() else {
         return;
     };
-    if !dir.is_dir() {
-        return;
-    }
-    if let Ok(entries) = std::fs::read_dir(dir) {
-        for entry in entries.flatten() {
-            let path = entry.path();
-            let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
-                continue;
-            };
-            if path.is_file() && is_cover_filename(bangumi_id, name) {
-                remove_cover_and_thumb(&path);
-            }
+    for ext in COVER_EXTENSIONS {
+        let path = dir.join(format!("{bangumi_id}.{ext}"));
+        if path.is_file() {
+            remove_cover_and_thumb(&path);
         }
     }
+    let _ = std::fs::remove_file(dir.join(format!("{bangumi_id}_thumb.jpg")));
 }
 
 pub(crate) fn remote_cover_url(game: &LibraryGame) -> Option<String> {
@@ -189,16 +127,8 @@ pub(crate) fn remote_cover_url(game: &LibraryGame) -> Option<String> {
         .map(|value| value.to_string())
 }
 
-pub(crate) fn download_cover_to_dir(
-    url: &str,
-    dir: &std::path::Path,
-    stem: &str,
-) -> Result<std::path::PathBuf, String> {
+fn download_cover_bytes(url: &str) -> Result<Vec<u8>, String> {
     crate::download::assert_allowed_download_url(url)?;
-    std::fs::create_dir_all(dir).map_err(|err| {
-        format!("无法创建封面目录（{}）：{}", dir.display(), err)
-    })?;
-
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(30))
         .redirect(crate::download::download_redirect_policy())
@@ -214,9 +144,79 @@ pub(crate) fn download_cover_to_dir(
         return Err(format!("下载封面失败：HTTP {}", response.status()));
     }
 
-    let bytes = response
+    response
         .bytes()
-        .map_err(|err| format!("读取封面数据失败：{}", err))?;
+        .map(|bytes| bytes.to_vec())
+        .map_err(|err| format!("读取封面数据失败：{}", err))
+}
+
+fn list_cover_urls(game: &LibraryGame) -> Vec<String> {
+    let mut urls = Vec::new();
+    let images = game.images.as_ref().and_then(|value| value.as_object());
+    if let Some(images) = images {
+        for key in ["small", "medium", "common", "large"] {
+            if let Some(url) = images
+                .get(key)
+                .and_then(|value| value.as_str())
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+            {
+                if !urls.iter().any(|existing| existing == url) {
+                    urls.push(url.to_string());
+                }
+            }
+        }
+    }
+    if let Some(url) = game
+        .image
+        .as_ref()
+        .map(|value| value.trim())
+        .filter(|value| !value.is_empty())
+    {
+        if !urls.iter().any(|existing| existing == url) {
+            urls.push(url.to_string());
+        }
+    }
+    urls
+}
+
+pub(crate) fn prepare_game_list_thumb(game: &LibraryGame) -> Option<std::path::PathBuf> {
+    let dir = games_cover_dir()?;
+    let _ = std::fs::create_dir_all(&dir);
+    let thumb = dir.join(format!("{}_thumb.jpg", game.bangumi_id));
+    if thumb.is_file() {
+        return Some(thumb);
+    }
+    if let Some(full) = find_local_cover(game.bangumi_id) {
+        return crate::image_util::ensure_jpeg_thumbnail(&full, &thumb);
+    }
+    for url in list_cover_urls(game) {
+        let Ok(bytes) = download_cover_bytes(&url) else {
+            continue;
+        };
+        let ext = crate::image_util::sniff_image_extension(&bytes);
+        let tmp = dir.join(format!("{}_src.{ext}", game.bangumi_id));
+        if crate::image_util::write_bytes_atomic(&tmp, &bytes).is_err() {
+            continue;
+        }
+        let result = crate::image_util::ensure_jpeg_thumbnail(&tmp, &thumb);
+        let _ = std::fs::remove_file(&tmp);
+        if result.is_some() {
+            return result;
+        }
+    }
+    None
+}
+
+pub(crate) fn download_cover_to_dir(
+    url: &str,
+    dir: &std::path::Path,
+    stem: &str,
+) -> Result<std::path::PathBuf, String> {
+    std::fs::create_dir_all(dir).map_err(|err| {
+        format!("无法创建封面目录（{}）：{}", dir.display(), err)
+    })?;
+    let bytes = download_cover_bytes(url)?;
     let dest = crate::image_util::save_image_bytes(dir, stem, &bytes)?;
     crate::image_util::schedule_sidecar_thumbnail(dest.clone());
     Ok(dest)
@@ -303,22 +303,15 @@ pub(crate) fn relocate_local_cover(previous_bangumi_id: i64, next_bangumi_id: i6
         || (std::fs::copy(&old_path, &new_path).is_ok() && std::fs::remove_file(&old_path).is_ok());
     if moved {
         let _ = std::fs::remove_file(old_thumb);
-        crate::image_util::schedule_sidecar_thumbnail(new_path.clone());
         remove_local_covers(previous_bangumi_id);
-        if let Ok(entries) = std::fs::read_dir(&dir) {
-            for entry in entries.flatten() {
-                let path = entry.path();
-                if path == new_path {
-                    continue;
-                }
-                let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
-                    continue;
-                };
-                if path.is_file() && is_cover_filename(next_bangumi_id, name) {
-                    remove_cover_and_thumb(&path);
-                }
+        for ext in COVER_EXTENSIONS {
+            let path = dir.join(format!("{next_bangumi_id}.{ext}"));
+            if path != new_path && path.is_file() {
+                let _ = std::fs::remove_file(&path);
             }
         }
+        let _ = std::fs::remove_file(dir.join(format!("{next_bangumi_id}_thumb.jpg")));
+        crate::image_util::schedule_sidecar_thumbnail(new_path);
     }
 }
 

@@ -11,7 +11,8 @@ mod meta;
 pub mod relations;
 use cover::{
     attach_cover_path, finalize_game_cover, find_game_cover,
-    install_cover_from_path, new_local_cover_stem, relocate_local_cover, remove_local_covers,
+    install_cover_from_path, new_local_cover_stem, prepare_game_list_thumb,
+    relocate_local_cover, remove_local_covers,
     remove_luna_vn_dir,
 };
 use meta::write_launch_meta;
@@ -771,6 +772,29 @@ pub fn get_library_game(db: State<'_, LibraryDb>, id: i64) -> Result<LibraryGame
         fetch_game_row_by_id(&conn, id)?
     };
     Ok(attach_cover_path(game))
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LibraryGameListCover {
+    pub cover_thumb_path: Option<String>,
+}
+
+#[tauri::command]
+pub async fn ensure_library_game_list_cover(
+    db: State<'_, LibraryDb>,
+    id: i64,
+) -> Result<LibraryGameListCover, String> {
+    let game = {
+        let conn = db.0.lock().map_err(|err| err.to_string())?;
+        fetch_game_row_by_id(&conn, id)?
+    };
+    let thumb = tauri::async_runtime::spawn_blocking(move || prepare_game_list_thumb(&game))
+        .await
+        .map_err(|err| err.to_string())?;
+    Ok(LibraryGameListCover {
+        cover_thumb_path: thumb.map(|path| path.to_string_lossy().into_owned()),
+    })
 }
 
 #[tauri::command]

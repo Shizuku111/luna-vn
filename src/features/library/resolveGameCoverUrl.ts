@@ -29,11 +29,11 @@ function remoteCoverUrl(game: CoverLike, variant: GameCoverVariant): string | nu
   }
   if (variant === "list") {
     return (
+      images?.small ||
       images?.medium ||
       images?.common ||
-      images?.large ||
-      images?.small ||
       game.image ||
+      images?.large ||
       null
     );
   }
@@ -54,9 +54,9 @@ export function resolveGameCoverUrl(
   const local = game.coverPath?.trim();
   const thumb = game.coverThumbPath?.trim();
 
-  if (variant === "thumb") {
+  if (variant === "thumb" || variant === "list") {
     if (thumb) return convertFileSrc(thumb);
-    if (local) return convertFileSrc(local);
+    if (variant === "thumb" && local) return convertFileSrc(local);
     return remoteCoverUrl(game, variant);
   }
 
