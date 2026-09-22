@@ -2,7 +2,6 @@ import { getLibraryGame } from "./libraryStore";
 
 export type CachedGameCover = {
   coverPath?: string | null;
-  coverThumbPath?: string | null;
 };
 
 const cache = new Map<number, CachedGameCover>();
@@ -21,25 +20,20 @@ export function subscribeGameCoverCache(listener: () => void) {
 }
 
 export function rememberGameCover(id: number, cover: CachedGameCover) {
-  const prev = cache.get(id);
   const coverPath =
     cover.coverPath === undefined
-      ? (prev?.coverPath ?? null)
+      ? (cache.get(id)?.coverPath ?? null)
       : cover.coverPath?.trim() || null;
-  const coverThumbPath =
-    cover.coverThumbPath === undefined
-      ? (prev?.coverThumbPath ?? null)
-      : cover.coverThumbPath?.trim() || null;
-  if (!coverPath && !coverThumbPath) {
+  if (!coverPath) {
     if (!cache.has(id)) return;
     cache.delete(id);
     for (const listener of listeners) listener();
     return;
   }
-  if (prev?.coverPath === coverPath && prev?.coverThumbPath === coverThumbPath) {
+  if (cache.get(id)?.coverPath === coverPath) {
     return;
   }
-  cache.set(id, { coverPath, coverThumbPath });
+  cache.set(id, { coverPath });
   for (const listener of listeners) listener();
 }
 
@@ -56,7 +50,6 @@ export function mergeCachedGameCover<T extends CachedGameCover & { id: number }>
   return {
     ...game,
     coverPath: cached.coverPath ?? game.coverPath,
-    coverThumbPath: cached.coverThumbPath ?? game.coverThumbPath,
   };
 }
 
@@ -64,7 +57,7 @@ export function loadLocalGameCover(
   id: number,
 ): Promise<CachedGameCover | null> {
   const cached = cache.get(id);
-  if (cached?.coverPath || cached?.coverThumbPath) {
+  if (cached?.coverPath) {
     return Promise.resolve(cached);
   }
   const pending = inflight.get(id);
@@ -72,13 +65,10 @@ export function loadLocalGameCover(
 
   const request = getLibraryGame(id)
     .then((game) => {
-      const next: CachedGameCover = {
-        coverPath: game.coverPath?.trim() || null,
-        coverThumbPath: game.coverThumbPath?.trim() || null,
-      };
-      if (next.coverPath || next.coverThumbPath) {
-        rememberGameCover(id, next);
-        return next;
+      const coverPath = game.coverPath?.trim() || null;
+      if (coverPath) {
+        rememberGameCover(id, { coverPath });
+        return { coverPath };
       }
       return null;
     })

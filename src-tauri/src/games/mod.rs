@@ -10,8 +10,8 @@ mod cover;
 mod meta;
 pub mod relations;
 use cover::{
-    attach_cover_path, finalize_game_cover, find_game_cover,
-    install_cover_from_path, new_local_cover_stem, prepare_game_list_thumb,
+    attach_cover_path, finalize_game_cover, find_local_cover,
+    install_cover_from_path, new_local_cover_stem,
     relocate_local_cover, remove_local_covers,
     remove_luna_vn_dir,
 };
@@ -122,7 +122,6 @@ pub struct LibraryGame {
     pub created_at: String,
     pub updated_at: String,
     pub cover_path: Option<String>,
-    pub cover_thumb_path: Option<String>,
     pub archived: Option<LibraryGameArchive>,
 }
 
@@ -173,7 +172,6 @@ pub(crate) fn map_game_row_at(row: &Row<'_>, offset: usize) -> rusqlite::Result<
         created_at: row.get(offset + 20)?,
         updated_at: row.get(offset + 21)?,
         cover_path: None,
-        cover_thumb_path: None,
         archived: None,
     })
 }
@@ -774,29 +772,6 @@ pub fn get_library_game(db: State<'_, LibraryDb>, id: i64) -> Result<LibraryGame
     Ok(attach_cover_path(game))
 }
 
-#[derive(Debug, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct LibraryGameListCover {
-    pub cover_thumb_path: Option<String>,
-}
-
-#[tauri::command]
-pub async fn ensure_library_game_list_cover(
-    db: State<'_, LibraryDb>,
-    id: i64,
-) -> Result<LibraryGameListCover, String> {
-    let game = {
-        let conn = db.0.lock().map_err(|err| err.to_string())?;
-        fetch_game_row_by_id(&conn, id)?
-    };
-    let thumb = tauri::async_runtime::spawn_blocking(move || prepare_game_list_thumb(&game))
-        .await
-        .map_err(|err| err.to_string())?;
-    Ok(LibraryGameListCover {
-        cover_thumb_path: thumb.map(|path| path.to_string_lossy().into_owned()),
-    })
-}
-
 #[tauri::command]
 pub fn ensure_library_game_cover(db: State<'_, LibraryDb>, id: i64) -> Result<LibraryGame, String> {
     let game = {
@@ -1392,7 +1367,6 @@ pub struct GameLogItem {
     pub name_cn: String,
     pub image: Option<String>,
     pub cover_path: Option<String>,
-    pub cover_thumb_path: Option<String>,
     pub infobox: Option<serde_json::Value>,
     pub nsfw: bool,
 }
@@ -1407,7 +1381,6 @@ type GameLogRow = (
     String,
     String,
     Option<String>,
-    String,
     Option<String>,
     i64,
 );
@@ -1425,7 +1398,6 @@ fn map_game_log_query_row(row: &Row<'_>) -> rusqlite::Result<GameLogRow> {
         row.get(8)?,
         row.get(9)?,
         row.get(10)?,
-        row.get(11)?,
     ))
 }
 
@@ -1440,26 +1412,14 @@ fn finish_game_log_item(row: GameLogRow) -> GameLogItem {
         name,
         name_cn,
         image,
-        launch_path,
         infobox_raw,
         nsfw,
     ) = row;
 
-    let cover = find_game_cover(&launch_path, bangumi_id);
+    let cover = find_local_cover(bangumi_id);
     let cover_path = cover
         .as_ref()
         .map(|path| path.to_string_lossy().into_owned());
-    let cover_thumb_path = match cover.as_ref() {
-        Some(path) => {
-            if let Some(thumb) = crate::image_util::find_existing_sidecar_thumbnail(path) {
-                Some(thumb.to_string_lossy().into_owned())
-            } else {
-                crate::image_util::schedule_sidecar_thumbnail(path.clone());
-                None
-            }
-        }
-        None => None,
-    };
     let infobox = infobox_raw.and_then(|value| serde_json::from_str(&value).ok());
 
     GameLogItem {
@@ -1473,7 +1433,6 @@ fn finish_game_log_item(row: GameLogRow) -> GameLogItem {
         name_cn,
         image,
         cover_path,
-        cover_thumb_path,
         infobox,
         nsfw: nsfw != 0,
     }
@@ -1500,7 +1459,6 @@ pub fn list_recent_game_logs(
                   g.name,
                   g.name_cn,
                   g.image,
-                  g.launch_path,
                   g.infobox,
                   g.nsfw
                 FROM game_logs l
@@ -1547,7 +1505,6 @@ pub fn list_library_game_logs(
                   g.name,
                   g.name_cn,
                   g.image,
-                  g.launch_path,
                   g.infobox,
                   g.nsfw
                 FROM game_logs l

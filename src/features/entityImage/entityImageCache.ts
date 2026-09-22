@@ -2,8 +2,6 @@ import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 
 export type EntityImageKind = "character" | "person";
 
-export type EntityImageVariant = "list" | "detail";
-
 export type EntityImageSources = {
   large?: string;
   medium?: string;
@@ -26,8 +24,8 @@ const ensureSemaphores: Record<EntityImageKind, Semaphore> = {
 
 const ensureInflight = new Map<string, Promise<string | null>>();
 
-function cacheKey(kind: EntityImageKind, id: number, variant: EntityImageVariant) {
-  return `${kind}:${variant}:${id}`;
+function cacheKey(kind: EntityImageKind, id: number) {
+  return `${kind}:${id}`;
 }
 
 function acquireEnsureSlot(kind: EntityImageKind): Promise<void> {
@@ -51,31 +49,16 @@ function releaseEnsureSlot(kind: EntityImageKind) {
   sem.active = Math.max(0, sem.active - 1);
 }
 
-export function toImageVariant(preferDetail: boolean): EntityImageVariant {
-  return preferDetail ? "detail" : "list";
-}
-
 export function pickRemoteEntityImageUrl(
   images?: EntityImageSources,
-  preferDetail = false,
 ): string | null {
   if (!images || typeof images !== "object") return null;
-  if (preferDetail) {
-    return (
-      images.large ||
-      images.medium ||
-      images.common ||
-      images.small ||
-      images.grid ||
-      null
-    );
-  }
   return (
-    images.medium ||
-    images.small ||
-    images.common ||
-    images.grid ||
     images.large ||
+    images.medium ||
+    images.common ||
+    images.small ||
+    images.grid ||
     null
   );
 }
@@ -83,13 +66,11 @@ export function pickRemoteEntityImageUrl(
 export async function resolveEntityImagePath(
   kind: EntityImageKind,
   id: number,
-  variant: EntityImageVariant = "list",
 ): Promise<string | null> {
   if (id <= 0) return null;
   const path = await invoke<string | null>("resolve_entity_image", {
     kind,
     id,
-    variant,
   });
   return path?.trim() || null;
 }
@@ -98,13 +79,12 @@ export async function ensureEntityImage(
   kind: EntityImageKind,
   id: number,
   remoteUrl?: string | null,
-  variant: EntityImageVariant = "list",
 ): Promise<string | null> {
   if (id <= 0) return null;
   const url = remoteUrl?.trim() || null;
   if (!url) return null;
 
-  const key = cacheKey(kind, id, variant);
+  const key = cacheKey(kind, id);
   const existing = ensureInflight.get(key);
   if (existing) return existing;
 
@@ -116,7 +96,6 @@ export async function ensureEntityImage(
           kind,
           id,
           remoteUrl: url,
-          variant,
         },
       });
       return path?.trim() || null;

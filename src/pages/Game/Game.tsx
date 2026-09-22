@@ -154,7 +154,6 @@ export function GamePage({
       return {
         ...updated,
         coverPath: updated.coverPath ?? current.coverPath,
-        coverThumbPath: updated.coverThumbPath ?? current.coverThumbPath,
       };
     });
   }
@@ -184,21 +183,17 @@ export function GamePage({
       void ensureLibraryGameCover(requestedId)
         .then((withCover) => {
           if (!refreshSeq.isCurrent(seq)) return;
-          if (!withCover.coverPath?.trim() && !withCover.coverThumbPath?.trim()) {
+          if (!withCover.coverPath?.trim()) {
             return;
           }
           setGame((current) => {
             if (!current || current.id !== withCover.id) return current;
-            if (
-              current.coverPath === withCover.coverPath &&
-              current.coverThumbPath === withCover.coverThumbPath
-            ) {
+            if (current.coverPath === withCover.coverPath) {
               return current;
             }
             return {
               ...current,
               coverPath: withCover.coverPath ?? current.coverPath,
-              coverThumbPath: withCover.coverThumbPath ?? current.coverThumbPath,
             };
           });
         })
@@ -230,7 +225,7 @@ export function GamePage({
   }, [gameId]);
 
   const coverUrlForAtmosphere = game
-    ? resolveGameCoverUrl(game, "thumb")
+    ? resolveGameCoverUrl(game)
     : null;
 
   useEffect(() => {
@@ -247,7 +242,7 @@ export function GamePage({
     };
   }, [coverUrlForAtmosphere]);
 
-  const coverUrl = game ? resolveGameCoverUrl(game, "detail") : null;
+  const coverUrl = game ? resolveGameCoverUrl(game) : null;
 
   useEffect(() => {
     if (!game) {

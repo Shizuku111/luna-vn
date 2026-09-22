@@ -111,13 +111,6 @@ export function EntityPage({
     kind,
     id: entity?.id ?? entityId,
     images: entity?.images,
-    preferDetail: true,
-  });
-  const entityThumbUrl = useCachedEntityImage({
-    kind,
-    id: entity?.id ?? entityId,
-    images: entity?.images,
-    preferDetail: false,
   });
 
   async function refresh() {
@@ -192,9 +185,9 @@ export function EntityPage({
   useEffect(() => {
     let cancelled = false;
     setAtmosphereRgb(null);
-    if (!entityThumbUrl) return;
+    if (!entityImageUrl) return;
 
-    void extractAtmosphereColor(entityThumbUrl).then((color) => {
+    void extractAtmosphereColor(entityImageUrl).then((color) => {
       if (cancelled || !color) return;
       setAtmosphereRgb(`${color.r}, ${color.g}, ${color.b}`);
     });
@@ -202,7 +195,7 @@ export function EntityPage({
     return () => {
       cancelled = true;
     };
-  }, [entityThumbUrl]);
+  }, [entityImageUrl]);
 
   const display = useMemo(() => {
     if (!entity) {

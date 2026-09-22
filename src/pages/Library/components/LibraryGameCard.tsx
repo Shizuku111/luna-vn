@@ -79,7 +79,7 @@ export const LibraryGameCard = memo(function LibraryGameCard({
 }: LibraryGameCardProps) {
   const cardRef = useRef<HTMLLIElement>(null);
   const openClickTimerRef = useRef<number | null>(null);
-  const coverUrl = useGameCoverUrl(game, "list");
+  const coverUrl = useGameCoverUrl(game);
   const { title, subtitle } = resolveGameListNames(game, showOriginalName);
   const studio = getGameStudioName(asInfobox(game.infobox));
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);

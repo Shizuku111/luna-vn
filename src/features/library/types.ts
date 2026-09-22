@@ -111,7 +111,6 @@ export type LibraryGame = {
   createdAt: string;
   updatedAt: string;
   coverPath?: string | null;
-  coverThumbPath?: string | null;
 };
 
 export type GameLogAction =
@@ -141,7 +140,6 @@ export type GameLogItem = {
   nameCn: string;
   image?: string | null;
   coverPath?: string | null;
-  coverThumbPath?: string | null;
   infobox?: unknown;
   nsfw: boolean;
 };

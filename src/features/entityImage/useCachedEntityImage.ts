@@ -3,7 +3,6 @@ import {
   ensureEntityImage,
   pickRemoteEntityImageUrl,
   resolveEntityImagePath,
-  toImageVariant,
   toLocalImageSrc,
   type EntityImageKind,
   type EntityImageSources,
@@ -13,22 +12,19 @@ type UseCachedEntityImageOptions = {
   kind: EntityImageKind;
   id: number;
   images?: EntityImageSources;
-  preferDetail?: boolean;
 };
 
 export function useCachedEntityImage({
   kind,
   id,
   images,
-  preferDetail = false,
 }: UseCachedEntityImageOptions): string | null {
-  const variant = toImageVariant(preferDetail);
-  const remoteUrl = pickRemoteEntityImageUrl(images, preferDetail);
+  const remoteUrl = pickRemoteEntityImageUrl(images);
   const [localSrc, setLocalSrc] = useState<string | null>(null);
 
   useEffect(() => {
     setLocalSrc(null);
-  }, [kind, id, variant]);
+  }, [kind, id]);
 
   useEffect(() => {
     if (id <= 0) return;
@@ -36,12 +32,12 @@ export function useCachedEntityImage({
     let cancelled = false;
 
     const ensurePromise = remoteUrl
-      ? ensureEntityImage(kind, id, remoteUrl, variant)
+      ? ensureEntityImage(kind, id, remoteUrl)
       : Promise.resolve<string | null>(null);
 
     void (async () => {
       try {
-        const existing = await resolveEntityImagePath(kind, id, variant);
+        const existing = await resolveEntityImagePath(kind, id);
         if (!cancelled && existing) {
           setLocalSrc(toLocalImageSrc(existing));
         }
@@ -58,7 +54,7 @@ export function useCachedEntityImage({
     return () => {
       cancelled = true;
     };
-  }, [kind, id, variant, remoteUrl]);
+  }, [kind, id, remoteUrl]);
 
   return localSrc || remoteUrl;
 }

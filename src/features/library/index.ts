@@ -12,7 +12,6 @@ export {
   pickPreferredLaunchExe,
 } from "./guessGameNameFromPath";
 export { resolveGameCoverUrl } from "./resolveGameCoverUrl";
-export type { GameCoverVariant } from "./resolveGameCoverUrl";
 export {
   clearGameCoverCache,
   loadLocalGameCover,
@@ -50,7 +49,6 @@ export {
 export {
   deleteLibraryGame,
   ensureLibraryGameCover,
-  ensureLibraryGameListCover,
   getLibraryGame,
   launchLibraryGame,
   listLibraryGames,

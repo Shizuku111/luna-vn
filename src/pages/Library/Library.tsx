@@ -10,7 +10,6 @@ import {
 import { useShowOriginalName } from "@/features/settings";
 import { offerBangumiTokenForImport } from "@/features/bangumi";
 import { useGameActions } from "@/hooks/useGameActions";
-import { useHydrateGameCovers } from "@/hooks/useHydrateGameCovers";
 import { LibraryGameCard } from "./components/LibraryGameCard";
 import {
   LibraryViewPanel,
@@ -101,7 +100,6 @@ export function LibraryPage({
   const [singleImportOpen, setSingleImportOpen] = useState(false);
   const [batchImportOpen, setBatchImportOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<LibraryGame | null>(null);
-  const [viewportGames, setViewportGames] = useState<LibraryGame[]>([]);
   const showOriginalName = useShowOriginalName();
   const {
     games,
@@ -109,12 +107,7 @@ export function LibraryPage({
     refresh: refreshGames,
     upsertGame,
     removeGame,
-    revision: gamesRevision,
   } = useLibraryGames();
-
-  useHydrateGameCovers(viewportGames, {
-    resetKey: gamesRevision,
-  });
 
   const visibleGames = useMemo(() => {
     const filtered =
@@ -308,7 +301,6 @@ export function LibraryPage({
               Math.ceil(columnWidth * 1.5 + 72)
             }
             resetScrollKey={`${statusFilter}\0${archiveFilter}\0${sortBy}\0${ascending}\0${showOriginalName}\0${favoritesOnly}\0${wishlistFirst}`}
-            onVisibleItemsChange={setViewportGames}
             renderItem={(game) => (
               <LibraryGameCard
                 game={game}

@@ -193,9 +193,6 @@ fn ensure_schema(conn: &Connection) -> Result<(), String> {
     ensure_table_favorite_column(conn, "characters")?;
     ensure_table_favorite_column(conn, "persons")?;
 
-    conn.execute("DELETE FROM game_logs WHERE action = 'close'", [])
-        .map_err(|err| err.to_string())?;
-
     Ok(())
 }
 

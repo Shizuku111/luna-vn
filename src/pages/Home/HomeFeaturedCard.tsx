@@ -50,7 +50,7 @@ export function HomeFeaturedCard({
   onLaunch,
 }: HomeFeaturedCardProps) {
   const coverRef = useRef<HTMLDivElement>(null);
-  const coverUrl = useGameCoverUrl(game, "detail");
+  const coverUrl = useGameCoverUrl(game);
   const [coverRatio, setCoverRatio] = useState(FALLBACK_COVER_RATIO);
   const { title, subtitle } = resolveGameListNames(game, showOriginalName);
   const studio = getGameStudioName(asInfobox(game.infobox));

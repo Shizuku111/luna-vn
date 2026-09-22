@@ -19,7 +19,6 @@ import { getGameStudioName, asInfobox } from "@/features/bangumi";
 import { toErrorMessage } from "@/utils/errorMessage";
 import { useRefreshSeq } from "@/hooks/useRefreshSeq";
 import { useGameActions } from "@/hooks/useGameActions";
-import { useHydrateGameCovers } from "@/hooks/useHydrateGameCovers";
 import {
   GAME_LOGS_CHANGED_EVENT,
   GAME_LOG_ACTION_LABEL,
@@ -66,8 +65,6 @@ const ACTION_ICON: Record<string, ReactNode> = {
 };
 
 function resolveLogCoverUrl(log: GameLogItem): string | null {
-  const thumb = log.coverThumbPath?.trim();
-  if (thumb) return convertFileSrc(thumb);
   const local = log.coverPath?.trim();
   if (local) return convertFileSrc(local);
   return log.image?.trim() || null;
@@ -142,7 +139,6 @@ export function HomePage({
     loading: gamesLoading,
     upsertGame,
     removeGame,
-    revision: gamesRevision,
   } = useLibraryGames();
   const [logs, setLogs] = useState<GameLogItem[]>([]);
   const [logsLoading, setLogsLoading] = useState(true);
@@ -201,25 +197,6 @@ export function HomePage({
     () => pickRecentGames(games, featuredGame?.id ?? null, 6),
     [games, featuredGame],
   );
-
-  const hydrateTargets = useMemo(() => {
-    const ids = new Set<number>();
-    const list: LibraryGame[] = [];
-    if (featuredGame) {
-      ids.add(featuredGame.id);
-      list.push(featuredGame);
-    }
-    for (const game of secondaryGames) {
-      if (ids.has(game.id)) continue;
-      ids.add(game.id);
-      list.push(game);
-    }
-    return list;
-  }, [featuredGame, secondaryGames]);
-
-  useHydrateGameCovers(hydrateTargets, {
-    resetKey: gamesRevision,
-  });
 
   const {
     handleLaunchGame,

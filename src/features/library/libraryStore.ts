@@ -156,12 +156,6 @@ export async function ensureLibraryGameCover(id: number): Promise<LibraryGame> {
   return invoke<LibraryGame>("ensure_library_game_cover", { id });
 }
 
-export async function ensureLibraryGameListCover(
-  id: number,
-): Promise<{ coverThumbPath?: string | null }> {
-  return invoke("ensure_library_game_list_cover", { id });
-}
-
 export async function launchLibraryGame(
   id: number,
   options?: { lePath?: string | null },

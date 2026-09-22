@@ -135,7 +135,7 @@ function RelatedGameTile({
   const mediaRef = useRef<HTMLDivElement>(null);
   const showOriginalName = useShowOriginalName();
   const game: LibraryGame = relation.game;
-  const coverUrl = resolveGameCoverUrl(game, "list");
+  const coverUrl = resolveGameCoverUrl(game);
   const { title, subtitle } = resolveGameListNames(game, showOriginalName);
   const relationLabel = showRelation ? (relation.relation?.trim() ?? "") : "";
 
