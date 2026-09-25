@@ -41,7 +41,7 @@ pub fn setup_system_tray(app: &AppHandle) -> Result<(), Box<dyn std::error::Erro
     Ok(())
 }
 
-fn show_main(app: &AppHandle) -> Result<(), String> {
+pub(crate) fn show_main(app: &AppHandle) -> Result<(), String> {
     let Some(window) = app.get_webview_window("main") else {
         return Err("主窗口不存在".to_string());
     };
