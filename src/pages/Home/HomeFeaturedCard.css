@@ -7,6 +7,8 @@
   cursor: pointer;
   color: #fff;
   isolation: isolate;
+  container-type: size;
+  container-name: featured-card;
 }
 
 .home-featured-card-bg {
@@ -73,6 +75,9 @@
 }
 
 .home-featured-card-body {
+  --featured-title-size: clamp(1.15rem, 7.2cqh, 2.1rem);
+  --featured-subtitle-size: clamp(0.9rem, 4.8cqh, 1.2rem);
+  --featured-studio-size: clamp(0.8rem, 3.8cqh, 1.05rem);
   position: relative;
   z-index: 3;
   height: 100%;
@@ -98,47 +103,71 @@
 
 .home-featured-card-copy {
   flex: 1;
+  min-width: 0;
   min-height: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: safe center;
   gap: clamp(6px, 2.5cqh, 12px);
   overflow: hidden;
 }
 
-.home-featured-card-title,
-.home-featured-card-subtitle {
-  margin: 0;
+.home-featured-card-title-slot {
+  position: relative;
   flex: 0 1 auto;
-  min-height: 0;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  height: 2lh;
+  min-width: 0;
+  min-height: 1lh;
+  max-width: 100%;
+  max-height: 2lh;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
-  word-break: break-word;
+  font-size: var(--featured-title-size);
+  line-height: 1.3;
+  container-type: size;
+  container-name: featured-title;
 }
 
+.home-featured-card-title {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1em;
+  font-weight: 700;
+  line-height: inherit;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+}
+
+@container featured-title (min-height: 2.45em) {
+  .home-featured-card-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-all;
+    line-break: strict;
+  }
+}
+
+.home-featured-card-subtitle,
 .home-featured-card-studio {
   margin: 0;
-  flex-shrink: 0;
+  flex: none;
+  min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.home-featured-card-title {
-  font-size: clamp(1.15rem, 7.2cqh, 2.1rem);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
-}
-
 .home-featured-card-subtitle {
-  font-size: clamp(0.9rem, 4.8cqh, 1.2rem);
+  font-size: var(--featured-subtitle-size);
   font-weight: 500;
   line-height: 1.3;
   color: rgba(255, 255, 255, 0.88);
@@ -146,7 +175,7 @@
 }
 
 .home-featured-card-studio {
-  font-size: clamp(0.8rem, 3.8cqh, 1.05rem);
+  font-size: var(--featured-studio-size);
   font-weight: 400;
   line-height: 1.3;
   color: rgba(255, 255, 255, 0.72);

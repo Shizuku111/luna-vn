@@ -138,9 +138,11 @@ export function HomeFeaturedCard({
             ) : null}
           </div>
           <div className="home-featured-card-copy">
-            <h2 className="home-featured-card-title" title={title}>
-              {title}
-            </h2>
+            <div className="home-featured-card-title-slot">
+              <h2 className="home-featured-card-title" title={title}>
+                {title}
+              </h2>
+            </div>
             {subtitle ? (
               <p className="home-featured-card-subtitle" title={subtitle}>
                 {subtitle}
